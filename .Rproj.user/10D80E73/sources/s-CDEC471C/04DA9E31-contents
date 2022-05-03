@@ -1,0 +1,164 @@
+---
+title: "Bayesian Probability Matrix Factorization"
+author:
+  - 许鑫
+documentclass: ctexart
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: no
+---
+```{r}
+library(dplyr)
+library(roxygen2)
+library(inline)
+library(Rcpp)
+```
+
+# Data Pre-processing
+
+```{r}
+Ratings <- read.csv("archive/Ratings.csv")
+Ratings_by_users <- group_by(Ratings, User.ID)
+user.Rating <- Ratings_by_users %>% summarise(
+  num = length(Book.Rating),
+  avg.rating = mean(Book.Rating)
+)
+num.Rating <- group_by(user.Rating, num) %>% summarise(
+  users = length(avg.rating)
+)
+```
+
+```{r}
+barplot(table(Ratings$Book.Rating))
+barplot(table(Ratings$Book.Rating)[-1])
+```
+
+## Getting train and test sets
+```{r}
+train <- NULL
+test <- NULL
+
+for(user in user.Rating$User.ID){
+  idx <- which(Ratings$User.ID == user)
+  n <- length(idx)
+  n.train <- ceiling(n*0.7)
+  if(length(idx) > 1){
+    idx.train <- sample(idx, size = n.train)
+    idx.test <- setdiff(idx, idx.train)
+    train.aux <- Ratings[idx.train, ]
+    test.aux <- Ratings[idx.test, ]
+    train <- rbind(train, train.aux)
+    test <- rbind(test, test.aux)
+  }else{
+    train.aux <- Ratings[idx, ]
+    train <- rbind(train, train.aux)
+  }
+  #browser()
+}
+
+```
+
+```{r}
+write.csv(train, file = "train.csv")
+write.csv(test, file = "test.csv")
+```
+
+```{r}
+barplot(table(train$Book.Rating))
+barplot(table(test$Book.Rating))
+rm(list = ls())
+```
+
+## change ISBN
+```{r}
+Ratings <- read.csv("archive/Ratings.csv")
+N <- max(Ratings$User.ID)
+book_idx <- unique(Ratings$ISBN)
+M <- length(book_idx)
+book_idx <- 1:M
+names(book_idx) <- unique(Ratings$ISBN)
+train <- read.csv("train.csv")
+train$ISBN <- book_idx[train$ISBN]
+#IsObs <- matrix(0, nrow = N, ncol = M)
+#for(i in 1:nrow(train)){
+#  user <- train[i, ]$User.ID
+#  book <- book_idx[train[i, ]$ISBN]
+#  IsObs[user, book] <- 1
+#}
+#save(IsOBs, file = "IsObs.Rda")
+```
+
+# pmf
+
+## train
+```{r}
+source("R/pmf_est.R")
+Rcpp::sourceCpp("cpp/grad_pmf.cpp")
+Rcpp::sourceCpp("cpp/loss_pmf.cpp")
+Rcpp::sourceCpp("cpp/par_pmf.cpp")
+Rcpp::sourceCpp("cpp/pred_pmf.cpp")
+
+```
+```{r}
+set.seed(123)
+start <- Sys.time()
+result1 <- pmf_est(train, 10)
+save(result1, file = "pmf1.Rda")
+end <- Sys.time()
+end - start
+```
+
+## test
+```{r}
+test <- read.csv("test.csv")
+test$ISBN <- book_idx[test$ISBN]
+```
+
+```{r}
+load("aux/U/pmf5.Rda")
+load("aux/V/pmf5.Rda")
+
+pred <- pred_pmf(test, t(result1$U), t(result1$V))
+test$pred <- pred$prediction
+```
+
+# logistic pmf
+
+## transform ratings
+```{r}
+train$Book.Rating <- train$Book.Rating/10
+test$Book.Rating <- test$Book.Rating/10
+```
+
+```{r}
+source("R/lpmf_est.R")
+Rcpp::sourceCpp("cpp/grad_lpmf.cpp")
+Rcpp::sourceCpp("cpp/loss_lpmf.cpp")
+Rcpp::sourceCpp("cpp/par_lpmf.cpp")
+Rcpp::sourceCpp("cpp/pred_lpmf.cpp")
+```
+
+```{r}
+set.seed(123)
+result <- lpmf_est(train, 10)
+```
+```{r}
+load(file = "result/1e-2-3-3-1e-6/U.Rda")
+load(file = "result/1e-2-3-3-1e-6/V.Rda")
+pred <- pred_lpmf(test, t(U), t(V))
+mean(abs((floor(pred$prediction*10)/10) - test$Book.Rating))
+```
+```{r}
+load(file = "result/1e-2, 3, 3/U.Rda")
+load(file = "result/1e-2, 3, 3/V.Rda")
+pred <- pred_lpmf(test, t(U), t(V))
+mean(abs(pred$prediction - test$Book.Rating))
+```
+
+
+
+
+
+

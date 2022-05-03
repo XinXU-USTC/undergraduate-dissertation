@@ -1,0 +1,51 @@
+#include <Rcpp.h>
+using namespace Rcpp;
+// [[Rcpp::export]]
+int loss_pmf(DataFrame df,
+              NumericMatrix Ut,
+              NumericMatrix Vt,
+              double sig2,
+              double sig2u,
+              double sig2v,
+              int M,
+              int N,
+              int dim) {
+  NumericVector user = as<NumericVector>(df["User.ID"]);
+  NumericVector book = as<NumericVector>(df["ISBN"]);
+  NumericVector rate = as<NumericVector>(df["Book.Rating"]);
+  NumericVector u, v;
+  int i, j, r;
+  double sum = 0, sum_u = 0, sum_v = 0;
+  double aux;
+  for(int k = 0; k < df.rows(); k++){
+    i = user[k];
+    j = book[k];
+    r = rate[k];
+    u = Ut.row(i-1);
+    v = Vt.row(j-1);
+    aux = 0;
+    for(int l = 0; l < u.size(); l++){
+      aux += u[l]*v[l];
+    }
+    sum += (r-aux)*(r-aux);
+  }
+  for(int k = 0; k < Ut.size(); k++){
+    sum_u += Ut[k]*Ut[k];
+    sum_v += Vt[k]*Vt[k];
+  }
+  sum /= sig2;
+  sum_u /= sig2u;
+  sum_v /= sig2v;
+  sum += (sum_u + sum_v);
+  sum += (rate.size()*log(sig2) + (N*dim+2)*log(sig2u) + (M*dim+2)*log(sig2v));
+  sum /= 2;
+  return sum;
+}
+
+
+/*** R
+dim = 2
+U <- matrix(rnorm(N*dim), nrow = dim)
+V <- matrix(rnorm(M*dim), nrow = dim)
+loss_pmf(train, t(U), t(V), 1, 1, 1, M, N, 10)
+*/

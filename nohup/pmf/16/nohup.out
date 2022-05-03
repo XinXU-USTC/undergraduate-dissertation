@@ -1,0 +1,200 @@
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> par_pmf(train, t(U), t(V))
+[1]     62.94122 558928.03651 372856.55296
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> pred_pmf(test, t(U), t(V))$rmae
+NULL
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+[1] 0.003 1.000 1.000
+[1] 16
+
+ *** caught segfault ***
+address 0x56216e120000, cause 'memory not mapped'
+
+Traceback:
+ 1: .Call(<pointer: 0x7f670324d6a0>, df, Ut, Vt, u_lam, v_lam)
+ 2: loss_pmf(data, t(U), t(V), sig2/sig2u, sig2/sig2v)
+ 3: pmf_mm(train, dim, init, verbose = TRUE, batch = 30000, t = 0.001,     max_iter = 50)
+An irrecoverable exception occurred. R is aborting now ...
+make: *** [/home/mathxuxin/anaconda3/envs/r-env/lib/R/etc/Makeconf:177: loss_pmf.o] Interrupt
+x86_64-conda-linux-gnu-c++ -std=gnu++14 -I"/home/mathxuxin/anaconda3/envs/r-env/lib/R/include" -DNDEBUG   -I"/import/home/mathxuxin/anaconda3/envs/r-env/lib/R/library/Rcpp/include" -I"/import/home/mathxuxin/nPMF/cpp" -DNDEBUG -D_FORTIFY_SOURCE=2 -O2 -isystem /home/mathxuxin/anaconda3/envs/r-env/include -I/home/mathxuxin/anaconda3/envs/r-env/include -Wl,-rpath-link,/home/mathxuxin/anaconda3/envs/r-env/lib   -fpic  -fvisibility-inlines-hidden  -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/mathxuxin/anaconda3/envs/r-env/include -fdebug-prefix-map=/home/conda/feedstock_root/build_artifacts/r-base-split_1642327566152/work=/usr/local/src/conda/r-base-4.1.2 -fdebug-prefix-map=/home/mathxuxin/anaconda3/envs/r-env=/usr/local/src/conda-prefix  -c loss_pmf.cpp -o loss_pmf.o
+Error in sourceCpp("~/nPMF/cpp/loss_pmf.cpp") : 
+  Error occurred building shared library.
+Execution halted
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> par_pmf(train, t(U), t(V))
+[1]     62.91752 556883.34824 371251.75105
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> pred_pmf(test, t(U), t(V))$rmae
+NULL
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+[1] 3e-06 1e+00 1e+00
+[1] 16
+[1] "2022-04-21 17:49:47 HKT"
+Epoch 1 	 loss: 9570610.59771164 	 dlt: 0.0622568706772917
+mae: 7.34731846296492 	rmse: 7.62440275237282 	par: 3e-06 1 1 
+[1] "2022-04-21 17:49:59 HKT"
+Epoch 3 	 loss: 6385543.90021154 	 dlt: 0.224588687997227
+mae: 5.14984398684728 	rmse: 5.79392636523225 	par: 3e-06 1 1 
+[1] "2022-04-21 17:50:11 HKT"
+Epoch 5 	 loss: 3832835.86679306 	 dlt: 0.209898546674644
+mae: 3.3948956346288 	rmse: 4.1254190826564 	par: 3e-06 1 1 
+[1] "2022-04-21 17:50:23 HKT"
+Epoch 7 	 loss: 2625610.71140762 	 dlt: 0.160913969640469
+mae: 2.56109294793468 	rmse: 3.26060037930825 	par: 3e-06 1 1 
+[1] "2022-04-21 17:50:34 HKT"
+Epoch 9 	 loss: 1966838.88231876 	 dlt: 0.128230029637146
+mae: 2.17115620833403 	rmse: 2.81593294737738 	par: 3e-06 1 1 
+[1] "2022-04-21 17:50:46 HKT"
+Epoch 11 	 loss: 1551032.17127579 	 dlt: 0.108579719429541
+mae: 1.96848615896181 	rmse: 2.57116723332334 	par: 3e-06 1 1 
+[1] "2022-04-21 17:50:58 HKT"
+Epoch 13 	 loss: 1246774.82033208 	 dlt: 0.0988943524887977
+mae: 1.83199168603612 	rmse: 2.39598193497591 	par: 3e-06 1 1 
+[1] "2022-04-21 17:51:10 HKT"
+Epoch 15 	 loss: 1019786.43508294 	 dlt: 0.0931363536820825
+mae: 1.75084294907438 	rmse: 2.28679641668513 	par: 3e-06 1 1 
+[1] "2022-04-21 17:51:21 HKT"
+Epoch 17 	 loss: 857956.301551482 	 dlt: 0.0874107181726398
+mae: 1.72300281091995 	rmse: 2.25196904309776 	par: 3e-06 1 1 
+[1] "2022-04-21 17:51:33 HKT"
+Epoch 19 	 loss: 716340.101627486 	 dlt: 0.0818107911734873
+mae: 1.67474549338213 	rmse: 2.19047444308058 	par: 3e-06 1 1 
+[1] "2022-04-21 17:51:45 HKT"
+Epoch 21 	 loss: 600064.430471579 	 dlt: 0.086947718004389
+mae: 1.63526471500428 	rmse: 2.13884304110348 	par: 3e-06 1 1 
+[1] "2022-04-21 17:51:56 HKT"
+Epoch 23 	 loss: 506810.92414054 	 dlt: 0.0765743981085078
+mae: 1.60582502726818 	rmse: 2.10822218810677 	par: 3e-06 1 1 
+[1] "2022-04-21 17:52:08 HKT"
+Epoch 25 	 loss: 426435.970343662 	 dlt: 0.0800726964002207
+mae: 1.59059184949471 	rmse: 2.08599304099313 	par: 3e-06 1 1 
+[1] "2022-04-21 17:52:19 HKT"
+Epoch 27 	 loss: 362536.263273876 	 dlt: 0.0775088845275354
+mae: 1.58061042800171 	rmse: 2.07832792189715 	par: 3e-06 1 1 
+[1] "2022-04-21 17:52:30 HKT"
+Epoch 29 	 loss: 306535.123133807 	 dlt: 0.0768806823222095
+mae: 1.56930611947552 	rmse: 2.06105880114897 	par: 3e-06 1 1 
+[1] "2022-04-21 17:52:42 HKT"
+Epoch 31 	 loss: 263075.586203846 	 dlt: 0.0866995863764349
+mae: 1.56727924234593 	rmse: 2.06038511958101 	par: 3e-06 1 1 
+[1] "2022-04-21 17:52:53 HKT"
+Epoch 33 	 loss: 227426.479887893 	 dlt: 0.0843855431107929
+mae: 1.55988121797382 	rmse: 2.05808740495821 	par: 3e-06 1 1 
+[1] "2022-04-21 17:53:06 HKT"
+Epoch 35 	 loss: 202746.250126611 	 dlt: 0.0459080725022519
+mae: 1.56522310220487 	rmse: 2.0617000318092 	par: 3e-06 1 1 
+[1] "2022-04-21 17:53:18 HKT"
+Epoch 37 	 loss: 180399.72121347 	 dlt: 0.0649049446365138
+mae: 1.56317021204315 	rmse: 2.06233854273446 	par: 3e-06 1 1 
+[1] "2022-04-21 17:53:31 HKT"
+Epoch 39 	 loss: 167445.329831233 	 dlt: 0.0321105563468512
+mae: 1.5724772209378 	rmse: 2.06889009502884 	par: 3e-06 1 1 
+[1] "2022-04-21 17:53:44 HKT"
+Epoch 41 	 loss: 150893.273459357 	 dlt: 0.0360174998665776
+mae: 1.55974398348602 	rmse: 2.06240588406544 	par: 3e-06 1 1 
+[1] "2022-04-21 17:53:56 HKT"
+Epoch 43 	 loss: 142183.028103485 	 dlt: 0.0372478411216355
+mae: 1.56554515571893 	rmse: 2.07238311590369 	par: 3e-06 1 1 
+[1] "2022-04-21 17:54:08 HKT"
+Epoch 45 	 loss: 136663.684577147 	 dlt: 0.0108048261555945
+mae: 1.57110602959331 	rmse: 2.08032423222695 	par: 3e-06 1 1 
+[1] "2022-04-21 17:54:21 HKT"
+Epoch 47 	 loss: 129278.101460046 	 dlt: 0.0491809609627295
+mae: 1.56784362232654 	rmse: 2.07594040971061 	par: 3e-06 1 1 
+[1] "2022-04-21 17:54:34 HKT"
+Epoch 49 	 loss: 125242.836104176 	 dlt: 0.0187373969470088
+mae: 1.56782279927183 	rmse: 2.07553688751843 	par: 3e-06 1 1 
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> par_pmf(train, t(U), t(V))
+[1]     62.88871 557538.18836 372764.87750
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> pred_pmf(test, t(U), t(V))$rmae
+NULL
+[1] 1e-04 1e+00 1e+00
+[1] 16
+[1] "2022-04-21 17:58:38 HKT"
+Epoch 1 	 loss: 211817.489873951 	 dlt: 0.00349431746329735
+mae: 1.55894865975033 	rmse: 2.05954545478951 
+[1] "2022-04-21 17:59:08 HKT"
+Epoch 3 	 loss: 209964.170234707 	 dlt: 0.00346258684224669
+mae: 1.55559725505636 	rmse: 2.05569168725357 
+[1] "2022-04-21 17:59:37 HKT"
+Epoch 5 	 loss: 208584.73575068 	 dlt: 0.00373240013890403
+mae: 1.55329954972168 	rmse: 2.05211585727017 
+[1] "2022-04-21 18:00:07 HKT"
+Epoch 7 	 loss: 207798.834177419 	 dlt: 0.00162324808275126
+mae: 1.55271067002497 	rmse: 2.05169713936724 
+[1] "2022-04-21 18:00:36 HKT"
+Epoch 9 	 loss: 207015.534626969 	 dlt: 0.00214892926933411
+mae: 1.551884518841 	rmse: 2.04964854539832 
+[1] "2022-04-21 18:01:41 HKT"
+Epoch 11 	 loss: 206754.956980001 	 dlt: 7.51684297726314e-14
+mae: 1.55226460449228 	rmse: 2.05002137942819 

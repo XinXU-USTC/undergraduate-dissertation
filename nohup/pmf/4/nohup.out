@@ -1,0 +1,368 @@
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> par_pmf(train, t(U), t(V))
+[1]     62.9113 557557.6370 372190.4650
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> pred_pmf(test, t(U), t(V))$rmae
+NULL
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+[1] 0.003 1.000 1.000
+[1] 4
+
+ *** caught segfault ***
+address 0x55c342991000, cause 'memory not mapped'
+
+Traceback:
+ 1: loss_pmf(data, t(U), t(V), sig2/sig2u, sig2/sig2v)
+ 2: pmf_mm(train, dim, init, verbose = TRUE, batch = 30000, t = 0.001,     max_iter = 50)
+An irrecoverable exception occurred. R is aborting now ...
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> par_pmf(train, t(U), t(V))
+[1]     62.93967 556069.87624 373277.69011
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> pred_pmf(test, t(U), t(V))$rmae
+NULL
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+[1] 0.003 1.000 1.000
+[1] 4
+
+ *** caught segfault ***
+address 0x561c3d6d9000, cause 'memory not mapped'
+
+Traceback:
+ 1: loss_pmf(data, t(U), t(V), sig2/sig2u, sig2/sig2v)
+ 2: pmf_mm(train, dim, init, verbose = TRUE, batch = 30000, t = 0.001,     max_iter = 50)
+An irrecoverable exception occurred. R is aborting now ...
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> par_pmf(train, t(U), t(V))
+[1]     62.85272 557624.22264 373516.45965
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> pred_pmf(test, t(U), t(V))$rmae
+NULL
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+[1] 0.003 1.000 1.000
+[1] 4
+
+ *** caught segfault ***
+address 0x565228eb5000, cause 'memory not mapped'
+
+Traceback:
+ 1: loss_pmf(data, t(U), t(V), sig2/sig2u, sig2/sig2v)
+ 2: pmf_mm(train, dim, init, verbose = TRUE, batch = 30000, t = 0.001,     max_iter = 50)
+An irrecoverable exception occurred. R is aborting now ...
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> par_pmf(train, t(U), t(V))
+[1]     62.99383 559633.73157 372267.86593
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> pred_pmf(test, t(U), t(V))$rmae
+NULL
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+[1] 3e-06 1e+00 1e+00
+[1] 4
+[1] "2022-04-21 16:28:45 HKT"
+Epoch 1 	 loss: 9995522.41805606 	 dlt: 0.0206233577443493
+mae: 7.62525564701883 	rmse: 7.83979695033959 	par: 3e-06 1 1 
+[1] "2022-04-21 16:28:48 HKT"
+Epoch 3 	 loss: 9129117.11325434 	 dlt: 0.0784924983990433
+mae: 6.38332202884428 	rmse: 6.89488878479553 	par: 3e-06 1 1 
+[1] "2022-04-21 16:28:52 HKT"
+Epoch 5 	 loss: 5475500.84102705 	 dlt: 0.215610653611438
+mae: 4.40320545954186 	rmse: 5.17149964389605 	par: 3e-06 1 1 
+[1] "2022-04-21 16:28:55 HKT"
+Epoch 7 	 loss: 3695511.08870801 	 dlt: 0.165195590851091
+mae: 3.24398299342015 	rmse: 4.05106177520971 	par: 3e-06 1 1 
+[1] "2022-04-21 16:28:58 HKT"
+Epoch 9 	 loss: 2720306.98978249 	 dlt: 0.134969362840038
+mae: 2.63414242801432 	rmse: 3.42129531029074 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:01 HKT"
+Epoch 11 	 loss: 2141119.17900617 	 dlt: 0.107074363377278
+mae: 2.30305938974478 	rmse: 3.05833589527735 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:04 HKT"
+Epoch 13 	 loss: 1750429.71100698 	 dlt: 0.092891336853545
+mae: 2.10104667287001 	rmse: 2.8177773598085 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:07 HKT"
+Epoch 15 	 loss: 1467304.27251754 	 dlt: 0.0815118684255189
+mae: 1.97520222011878 	rmse: 2.66873294813401 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:11 HKT"
+Epoch 17 	 loss: 1256033.44175794 	 dlt: 0.0732570393715464
+mae: 1.89250061572182 	rmse: 2.56362765262055 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:14 HKT"
+Epoch 19 	 loss: 1085633.10273276 	 dlt: 0.0731856380181456
+mae: 1.83092790672231 	rmse: 2.48020152526626 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:17 HKT"
+Epoch 21 	 loss: 948131.264834889 	 dlt: 0.0647613190381611
+mae: 1.78022810955717 	rmse: 2.41200288342658 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:20 HKT"
+Epoch 23 	 loss: 836727.176251851 	 dlt: 0.0592602043437092
+mae: 1.74468140903573 	rmse: 2.36440542751806 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:23 HKT"
+Epoch 25 	 loss: 743393.01258857 	 dlt: 0.0560881325917239
+mae: 1.71768262437079 	rmse: 2.32452729172297 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:27 HKT"
+Epoch 27 	 loss: 663801.517757384 	 dlt: 0.0544914543440729
+mae: 1.69469707644292 	rmse: 2.29504353665531 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:30 HKT"
+Epoch 29 	 loss: 595205.381727002 	 dlt: 0.0567577116265904
+mae: 1.67549802473372 	rmse: 2.26881637235223 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:33 HKT"
+Epoch 31 	 loss: 536811.513872824 	 dlt: 0.0553247065115734
+mae: 1.66600300351898 	rmse: 2.25776190432663 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:36 HKT"
+Epoch 33 	 loss: 478177.502326449 	 dlt: 0.0570772118624481
+mae: 1.6478118500283 	rmse: 2.23029245570596 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:39 HKT"
+Epoch 35 	 loss: 422787.290181151 	 dlt: 0.0589561181340913
+mae: 1.62989286783461 	rmse: 2.2018878986254 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:42 HKT"
+Epoch 37 	 loss: 374932.874282516 	 dlt: 0.0575536046802705
+mae: 1.62256729812793 	rmse: 2.19593357991851 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:46 HKT"
+Epoch 39 	 loss: 328611.423538593 	 dlt: 0.0623762035833252
+mae: 1.61528724695709 	rmse: 2.18497428620696 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:49 HKT"
+Epoch 41 	 loss: 289444.10272717 	 dlt: 0.0615601837162291
+mae: 1.61495935328892 	rmse: 2.18675236072683 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:52 HKT"
+Epoch 43 	 loss: 259791.468779661 	 dlt: 0.046105000966406
+mae: 1.620888476056 	rmse: 2.1901216222971 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:55 HKT"
+Epoch 45 	 loss: 226738.593159931 	 dlt: 0.0562836506576546
+mae: 1.60781142322524 	rmse: 2.17781202673497 	par: 3e-06 1 1 
+[1] "2022-04-21 16:29:58 HKT"
+Epoch 47 	 loss: 205367.510929718 	 dlt: 0.0405659749407338
+mae: 1.61267927938622 	rmse: 2.18816953136404 	par: 3e-06 1 1 
+[1] "2022-04-21 16:30:01 HKT"
+Epoch 49 	 loss: 201685.362161709 	 dlt: 0.00650631415761387
+mae: 1.64671889254742 	rmse: 2.24105279731819 	par: 3e-06 1 1 
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> par_pmf(train, t(U), t(V))
+[1]     62.96409 558953.47581 372059.41888
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> pred_pmf(test, t(U), t(V))$rmae
+NULL
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+[1] 3e-06 1e+00 1e+00
+[1] 4
+[1] "2022-04-21 16:33:28 HKT"
+Epoch 1 	 loss: 9995522.41805606 	 dlt: 0.0206233577443493
+mae: 7.62525564701883 	rmse: 7.83979695033959 	par: 3e-06 1 1 
+[1] "2022-04-21 16:33:32 HKT"
+Epoch 3 	 loss: 9129117.11325434 	 dlt: 0.0784924983990433
+mae: 6.38332202884428 	rmse: 6.89488878479553 	par: 3e-06 1 1 
+[1] "2022-04-21 16:33:35 HKT"
+Epoch 5 	 loss: 5475500.84102705 	 dlt: 0.215610653611438
+mae: 4.40320545954186 	rmse: 5.17149964389605 	par: 3e-06 1 1 
+[1] "2022-04-21 16:33:39 HKT"
+Epoch 7 	 loss: 3695511.08870801 	 dlt: 0.165195590851091
+mae: 3.24398299342015 	rmse: 4.05106177520971 	par: 3e-06 1 1 
+[1] "2022-04-21 16:33:43 HKT"
+Epoch 9 	 loss: 2720306.98978249 	 dlt: 0.134969362840038
+mae: 2.63414242801432 	rmse: 3.42129531029074 	par: 3e-06 1 1 
+[1] "2022-04-21 16:33:47 HKT"
+Epoch 11 	 loss: 2141119.17900617 	 dlt: 0.107074363377278
+mae: 2.30305938974478 	rmse: 3.05833589527735 	par: 3e-06 1 1 
+[1] "2022-04-21 16:33:50 HKT"
+Epoch 13 	 loss: 1750429.71100698 	 dlt: 0.092891336853545
+mae: 2.10104667287001 	rmse: 2.8177773598085 	par: 3e-06 1 1 
+[1] "2022-04-21 16:33:54 HKT"
+Epoch 15 	 loss: 1467304.27251754 	 dlt: 0.0815118684255189
+mae: 1.97520222011878 	rmse: 2.66873294813401 	par: 3e-06 1 1 
+[1] "2022-04-21 16:33:58 HKT"
+Epoch 17 	 loss: 1256033.44175794 	 dlt: 0.0732570393715464
+mae: 1.89250061572182 	rmse: 2.56362765262055 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:02 HKT"
+Epoch 19 	 loss: 1085633.10273276 	 dlt: 0.0731856380181456
+mae: 1.83092790672231 	rmse: 2.48020152526626 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:05 HKT"
+Epoch 21 	 loss: 948131.264834889 	 dlt: 0.0647613190381611
+mae: 1.78022810955717 	rmse: 2.41200288342658 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:08 HKT"
+Epoch 23 	 loss: 836727.176251851 	 dlt: 0.0592602043437092
+mae: 1.74468140903573 	rmse: 2.36440542751806 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:11 HKT"
+Epoch 25 	 loss: 743393.01258857 	 dlt: 0.0560881325917239
+mae: 1.71768262437079 	rmse: 2.32452729172297 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:14 HKT"
+Epoch 27 	 loss: 663801.517757384 	 dlt: 0.0544914543440729
+mae: 1.69469707644292 	rmse: 2.29504353665531 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:17 HKT"
+Epoch 29 	 loss: 595205.381727002 	 dlt: 0.0567577116265904
+mae: 1.67549802473372 	rmse: 2.26881637235223 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:20 HKT"
+Epoch 31 	 loss: 536811.513872824 	 dlt: 0.0553247065115734
+mae: 1.66600300351898 	rmse: 2.25776190432663 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:24 HKT"
+Epoch 33 	 loss: 478177.502326449 	 dlt: 0.0570772118624481
+mae: 1.6478118500283 	rmse: 2.23029245570596 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:27 HKT"
+Epoch 35 	 loss: 422787.290181151 	 dlt: 0.0589561181340913
+mae: 1.62989286783461 	rmse: 2.2018878986254 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:30 HKT"
+Epoch 37 	 loss: 374932.874282516 	 dlt: 0.0575536046802705
+mae: 1.62256729812793 	rmse: 2.19593357991851 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:33 HKT"
+Epoch 39 	 loss: 328611.423538593 	 dlt: 0.0623762035833252
+mae: 1.61528724695709 	rmse: 2.18497428620696 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:36 HKT"
+Epoch 41 	 loss: 289444.10272717 	 dlt: 0.0615601837162291
+mae: 1.61495935328892 	rmse: 2.18675236072683 	par: 3e-06 1 1 
+[1] "2022-04-21 16:34:39 HKT"
+Epoch 43 	 loss: 259791.468779661 	 dlt: 0.046105000966406
+mae: 1.620888476056 	rmse: 2.1901216222971 	par: 3e-06 1 1 
+
+Execution halted
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> par_pmf(train, t(U), t(V))
+[1]     62.89448 557249.48191 372476.06984
+
+> dim = 2
+
+> U <- matrix(rnorm(N * dim), nrow = dim)
+
+> V <- matrix(rnorm(M * dim), nrow = dim)
+
+> pred_pmf(test, t(U), t(V))$rmae
+NULL
+[1] 1e-04 1e+00 1e+00
+[1] 4
+[1] "2022-04-21 16:35:18 HKT"
+Epoch 1 	 loss: 213130.14542586 	 dlt: 0.00458106501997924
+mae: 1.60491586805866 	rmse: 2.17468737859723 
+[1] "2022-04-21 16:35:29 HKT"
+Epoch 3 	 loss: 212108.101798845 	 dlt: 0.00227183386302196
+mae: 1.60290670962806 	rmse: 2.17218761344618 
+[1] "2022-04-21 16:35:41 HKT"
+Epoch 5 	 loss: 210806.653525403 	 dlt: 0.00193013621543573
+mae: 1.60069461191084 	rmse: 2.17065459389237 
+[1] "2022-04-21 16:35:53 HKT"
+Epoch 7 	 loss: 210140.650025391 	 dlt: 0.00160899693058832
+mae: 1.5998193738252 	rmse: 2.17033966952485 
+[1] "2022-04-21 16:36:13 HKT"
+Epoch 9 	 loss: 209669.765420573 	 dlt: 2.37998030053054e-10
+mae: 1.59884645515411 	rmse: 2.16968908624611 
