@@ -1,0 +1,8 @@
+"0","Users[is.na(Users$Age), ""Age""] <- 0"
+"0","Users[which(Users$Age > 100), ""Age""] <- 0"
+"0","Users[which(Users$Age < 7), ""Age""] <- 0"
+"0","sum(sum(Users$Age==0))/length(Users$Age)"
+"1","[1]"
+"1"," 0.4018268"
+"1","
+"

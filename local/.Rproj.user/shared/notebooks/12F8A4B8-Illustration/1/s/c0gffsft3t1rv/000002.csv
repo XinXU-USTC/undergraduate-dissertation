@@ -1,0 +1,3 @@
+"0","Ratings <- read.csv(""archive/Ratings.csv"")"
+"0","Users <- read.csv(""archive/Users.csv"")"
+"0","Books <- read.csv(""archive/Books.csv"")"

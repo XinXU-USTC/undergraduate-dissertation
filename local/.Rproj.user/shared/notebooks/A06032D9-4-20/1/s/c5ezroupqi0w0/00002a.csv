@@ -1,0 +1,1 @@
+"0","lines(2^(1:4), gd.rmse, col = ""blue"", xlab = ""dimension"", ylab = ""RMSE"")"

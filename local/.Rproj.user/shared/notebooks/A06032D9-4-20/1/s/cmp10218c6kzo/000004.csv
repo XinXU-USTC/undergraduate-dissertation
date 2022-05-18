@@ -1,0 +1,7 @@
+"0","strain <- read.csv(""archive/strain0.csv"")"
+"0","stest <- read.csv(""archive/stest0.csv"")"
+"0","strain$Book.Rating <- (strain$Book.Rating)/9"
+"0","stest$Book.Rating <- (stest$Book.Rating)/9"
+"0","set.seed(123)"
+"0","rst.sim.lpmf <- lpmf_mm(strain, stest, 4, c(1e-10, 1, 1), batch = 2e3, M = 1e2, N = 1e4, max_iter = 80, t = 0.3)"
+"0","save(rst.sim.lpmf, file = ""rst_sim_lpmf.Rda"")"

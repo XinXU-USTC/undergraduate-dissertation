@@ -1,0 +1,5 @@
+"0","bookavg_rslt <- pred_bookavg(test, book_avg, book_idx1)
+"
+"2","Error in pred_bookavg(test, book_avg, book_idx1) : 
+  Not compatible with requested type: [type=character; target=integer].
+"

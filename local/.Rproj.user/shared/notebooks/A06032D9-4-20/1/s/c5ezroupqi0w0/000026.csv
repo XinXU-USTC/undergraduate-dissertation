@@ -1,0 +1,1 @@
+"0","plot(2^(1:4), mm.rmse, type = ""l"", col = ""red"", xlab = ""dimension"", ylab = ""MAE"", main = ""LPMF: RMSE-Dimension"", xaxt = ""none"", ylim = c(0.19, 0.24))"

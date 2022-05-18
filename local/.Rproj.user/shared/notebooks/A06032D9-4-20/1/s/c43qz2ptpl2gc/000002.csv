@@ -1,0 +1,44 @@
+"0","sourceCpp(""cpp/grad_pmf.cpp"")"
+"0","sourceCpp(""cpp/loss_pmf.cpp"")"
+"2","loss_pmf.cpp:14:30: warning: unused variable 'sum_v' [-Wunused-variable]
+  double sum = 0, sum_u = 0, sum_v = 0;
+                             ^
+loss_pmf.cpp:14:19: warning: unused variable 'sum_u' [-Wunused-variable]
+  double sum = 0, sum_u = 0, sum_v = 0;
+                  ^
+"
+"2","2 warnings generated.
+"
+"0","source(""cpp/loss/loss_pmf.R"")"
+"0","sourceCpp(""cpp/pred_pmf.cpp"")"
+"1","
+"
+"1",""
+"1","> dim = 2"
+"1",""
+"1","
+"
+"1","
+"
+"1",""
+"1","> U <- matrix(rnorm(N*dim), nrow = dim)"
+"1",""
+"1","
+"
+"1","
+"
+"1",""
+"1","> V <- matrix(rnorm(M*dim), nrow = dim)"
+"1",""
+"1","
+"
+"1","
+"
+"1",""
+"1","> pred_pmf(test, t(U), t(V))$rmae"
+"1",""
+"1","
+"
+"1","NULL
+"
+"0","source(""R/pmf_mm.R"")"

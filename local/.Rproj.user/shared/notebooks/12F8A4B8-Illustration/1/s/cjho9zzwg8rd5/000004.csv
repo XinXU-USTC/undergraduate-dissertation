@@ -1,0 +1,5 @@
+"0","train.book.dist <- group_by(train, ISBN) %>% summarise("
+"0","  num = length(User.ID),"
+"0","  dist = mean(dist)"
+"0",")"
+"0","ggplot(data = train.book.dist[which(train.book.dist$num<30&train.book.dist$num>3), ], aes(x=num)) + geom_bar()+xlab(""Number of Ratings"")"

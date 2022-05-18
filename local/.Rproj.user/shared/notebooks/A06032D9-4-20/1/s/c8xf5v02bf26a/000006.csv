@@ -1,0 +1,8 @@
+"0","Rating_by_location <- group_by(user.Rating, Location) %>% summarise("
+"0","  user.num = length(num),"
+"0","  avg.rating = sum(num*avg.rating)/sum(num)"
+"0",")"
+"0","Rating_by_age <- group_by(user.Rating, Age) %>% summarise("
+"0","  user.num = length(num),"
+"0","  avg.rating = sum(num*avg.rating)/sum(num)"
+"0",")"

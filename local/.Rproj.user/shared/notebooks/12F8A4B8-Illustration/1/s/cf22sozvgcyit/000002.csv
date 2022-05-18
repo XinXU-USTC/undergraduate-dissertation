@@ -1,0 +1,1 @@
+"0","ggplot(data = train.book.dist, aes(x=num, y=d))+geom_point()+xlab(""Number of Ratings"")+ylab(""Distance"")"

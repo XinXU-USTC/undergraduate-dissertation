@@ -1,0 +1,6 @@
+"0","sum(train.book.dist$d < 1)/nrow(train.book.dist)"
+"1","[1]"
+"1"," 0.02547771"
+"1","
+"
+"0","ggplot(data = train.book.dist, aes(x="""", y=d))+geom_boxplot()"

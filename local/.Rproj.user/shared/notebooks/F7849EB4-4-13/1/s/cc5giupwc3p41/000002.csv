@@ -1,0 +1,2 @@
+"0","cat(paste(""MAE:"", round(bookavg_rslt$mae, 4), ""\tRMSE: "", round(bookavg_rslt$rmse, 4)))"
+"1","MAE: 0.3266 	RMSE:  0.4104"

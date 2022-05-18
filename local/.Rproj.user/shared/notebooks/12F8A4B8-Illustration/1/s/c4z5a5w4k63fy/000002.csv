@@ -1,0 +1,9 @@
+"0","ggplot(data = NULL, aes(x = x, y = y, shape = t, size = t, color = t ))+xlab(""虚幻-现实"")+ylab(""理性-感性"")+geom_point()+geom_abline(slope = 0, intercept = 0, color = ""red"", size = 2, linetype = ""dashed"")+geom_vline(xintercept = 0, color = ""red"", size = 2, linetype = ""dashed"") + guides(shape = FALSE, color = FALSE, size = FALSE)+geom_label_repel(aes(label = rownames(df),"
+"0","                    fill = t), color = 'white',"
+"0","                    size = 3.5, show.legend = FALSE)"
+"2","Warning:"
+"2"," `guides(<scale> = FALSE)` is deprecated. Please use `guides(<scale> = ""none"")` instead.
+"
+"2","Warning:"
+"2"," Using size for a discrete variable is not advised.
+"

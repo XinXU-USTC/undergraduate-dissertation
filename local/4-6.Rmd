@@ -1,0 +1,235 @@
+---
+title: "4-6"
+author:
+  - XU, Xin
+documentclass: ctexart
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+---
+
+```{r}
+library(dplyr)
+library(Rcpp)
+```
+
+# Data Pre-processing
+```{r}
+Ratings <- read.csv("archive/Ratings.csv")
+Ratings_by_users <- group_by(Ratings, User.ID)
+user.Rating <- Ratings_by_users %>% summarise(
+  num = length(Book.Rating),
+  avg.rating = mean(Book.Rating)
+)
+num.Rating <- group_by(user.Rating, num) %>% summarise(
+  users = length(avg.rating)
+)
+```
+
+## Getting Training Set and Test Set
+```{r eval=FALSE}
+train <- NULL
+test <- NULL
+
+for(user in user.Rating$User.ID){
+  idx <- which(Ratings$User.ID == user)
+  n <- length(idx)
+  n.train <- ceiling(n*0.7)
+  if(length(idx) > 1){
+    idx.train <- sample(idx, size = n.train)
+    idx.test <- setdiff(idx, idx.train)
+    train.aux <- Ratings[idx.train, ]
+    test.aux <- Ratings[idx.test, ]
+    train <- rbind(train, train.aux)
+    test <- rbind(test, test.aux)
+  }else{
+    train.aux <- Ratings[idx, ]
+    train <- rbind(train, train.aux)
+  }
+}
+
+write.csv(train, file = "train.csv")
+write.csv(test, file = "test.csv")
+```
+
+## ISBN
+```{r}
+N <- max(Ratings$User.ID)
+book_idx <- unique(Ratings$ISBN)
+M <- length(book_idx)
+book_idx <- 1:M
+names(book_idx) <- unique(Ratings$ISBN)
+train <- read.csv("archive/train.csv")
+train$ISBN <- book_idx[train$ISBN]
+test <- read.csv("archive/test.csv")
+test$ISBN <- book_idx[test$ISBN]
+```
+
+# simulation
+```{r eval=FALSE}
+set.seed(123)
+A <- matrix(rnorm(1e4*4, sd = sqrt(1)), ncol = 1e4)
+B <- matrix(rnorm(1e2*4, sd = sqrt(1)), ncol = 1e2)
+E <- matrix(rnorm(1e4*1e2, sd = sqrt(1e-2)), ncol = 1e2)
+aux <- t(A) %*% B
+aux <- 1/(1+exp(-aux))
+obs <- aux + E
+obs <- ifelse(obs < 0, 0, obs)
+obs <- ifelse(obs > 1, 1, obs)
+obs <- floor(10*obs)/10
+obs <- 10*obs
+W <- matrix(sample(0:2, 1e4*1e2, prob = c(0.9, 0.07, 0.03), replace = TRUE), ncol = 1e2)
+strain <- data.frame(User.ID = c(), ISBN = c(), Book.Rating = c())
+stest <- data.frame(User.ID = c(), ISBN = c(), Book.Rating = c())
+for(i in 1:1e4){
+  for(j in 1:1e2){
+    if(W[i, j] == 1){#train
+      strain <- rbind(strain, c(i, j, obs[i, j]))
+    }
+    if(W[i, j] == 2){#test
+      stest <- rbind(stest, c(i, j, obs[i, j]))
+    }
+  }
+}
+colnames(strain) <- c("User.ID", "ISBN", "Book.Rating")
+colnames(stest) <- c("User.ID", "ISBN", "Book.Rating")
+write.csv(strain, file = "archive/strain.csv")
+write.csv(stest, file = "archive/stest.csv")
+```
+
+```{r}
+table(strain$Book.Rating)/sum(table(strain$Book.Rating))
+table(train$Book.Rating)/sum(table(train$Book.Rating))
+table(stest$Book.Rating)/sum(table(stest$Book.Rating))
+table(test$Book.Rating)/sum(table(test$Book.Rating))
+```
+
+##pmf
+```{r}
+sourceCpp("cpp/grad_pmf.cpp")
+sourceCpp("cpp/loss_pmf.cpp")
+sourceCpp("cpp/par_pmf.cpp")
+sourceCpp("cpp/pred_pmf.cpp")
+source("R/pmf_mm.R")
+```
+```{r}
+strain <- read.csv("archive/strain.csv")
+stest <- read.csv("archive/stest.csv")
+set.seed(123)
+rst.sim.pmf <- pmf_mm(strain, stest, 3, c(1e-2, 1, 1), batch = 5e2, M = 1e2, N = 1e4, max_iter = 50, t = 1e-3)
+```
+
+```{r}
+sourceCpp("cpp/grad_lpmf.cpp")
+sourceCpp("cpp/loss_lpmf.cpp")
+sourceCpp("cpp/par_lpmf.cpp")
+sourceCpp("cpp/pred_lpmf.cpp")
+source("R/lpmf_mm.R")
+```
+
+```{r}
+strain$Book.Rating <- strain$Book.Rating/10
+stest$Book.Rating <- stest$Book.Rating/10
+```
+```{r}
+set.seed(123)
+rst.sim.lpmf <- lpmf_mm(strain, stest, 3, c(1e-2, 1, 1), batch = 5e2, M = 1e2, N = 1e4, max_iter = 2e2)
+```
+
+
+
+# lpmf
+```{r}
+train$Book.Rating <- train$Book.Rating/10
+test$Book.Rating <- test$Book.Rating/10
+```
+
+```{r}
+sourceCpp("cpp/grad_lpmf.cpp")
+sourceCpp("cpp/loss_lpmf.cpp")
+sourceCpp("cpp/par_lpmf.cpp")
+sourceCpp("cpp/pred_lpmf.cpp")
+source("R/lpmf_mm.R")
+```
+```{r}
+#set.seed(123)
+result <- lpmf_mm(train, 4, c(1e-3, 3, 3), verbose = TRUE, batch = 1e4)
+```
+
+# cpmf
+
+```{r eval=FALSE}
+user_idx <- unique(train$User.ID)
+user_book <- lapply(user_idx, function(id){
+  df <- train[which(train$User.ID == id), ]
+  return(df$ISBN)
+})
+read <- list(user_idx = user_idx, user_book = user_book, user_num = sapply(user_book, function(x){
+  length(x)
+}))
+save(read, file = "read.Rda")
+```
+
+```{r}
+load("read.Rda")
+sourceCpp("cpp/user_cpmf.cpp")
+sourceCpp("cpp/loss_cpmf.cpp")
+sourceCpp("cpp/grad_cpmf.cpp")
+sourceCpp("cpp/pred_cpmf.cpp")
+source("R/cpmf_mm.R")
+```
+
+```{r}
+train <- read.csv("archive/train.csv")
+test <- read.csv("archive/test.csv")
+train$ISBN <- book_idx[train$ISBN]
+test$ISBN <- book_idx[test$ISBN]
+train$Book.Rating <- train$Book.Rating/10
+test$Book.Rating <- test$Book.Rating/10
+test <- test[which(test$ISBN %in% train.book.avg$ISBN),]
+set.seed(123)
+result.cpmf <- cpmf_mm(train, 2, c(1e-2, 2, 1, 2), batch = 3e4, t = 0.3, verbose = TRUE, max_iter = 50)
+```
+
+```{r}
+strain <- read.csv("archive/strain.csv")
+stest <- read.csv("archive/stest.csv")
+strain$Book.Rating <- strain$Book.Rating/10
+stest$Book.Rating <- stest$Book.Rating/10
+rst.sim.cpmf <- cpmf_mm(strain, stest, 2, c(1e-2, 2, 1, 2), batch = 3e4, t = 0.3, verbose = TRUE, max_iter = 1e2, M = 1e2, N = 1e4)
+```
+
+# book avarage
+
+```{r}
+train <- read.csv("archive/train.csv")
+train$ISBN <- book_idx[train$ISBN]
+train$Book.Rating <- train$Book.Rating/10
+train.book.avg <- group_by(train, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+```
+
+```{r}
+test <- read.csv("archive/test.csv")
+test$ISBN <- book_idx[test$ISBN]
+# remove books in the test set that do not appear in training set
+test <- test[which(test$ISBN %in% train.book.avg$ISBN),]
+test$Book.Rating <- test$Book.Rating/10
+```
+
+```{r}
+book_avg <- train.book.avg$avg.rating
+names(book_avg) <- train.book.avg$ISBN
+book_idx1 <- names(book_avg)
+Rcpp::sourceCpp("cpp/pred_bookavg.cpp")
+bookavg_rslt <- pred_bookavg(test, book_avg, book_idx1)
+```
+
+
+
+
+
+

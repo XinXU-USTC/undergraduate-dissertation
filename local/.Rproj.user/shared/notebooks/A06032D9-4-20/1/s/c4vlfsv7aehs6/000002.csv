@@ -1,0 +1,17 @@
+"0","load(""FU.Rda"")"
+"0","load(""FV.Rda"")"
+"0","set.seed(123)"
+"0","init <- c(1e-5, 1, 1, 1e2, 1e2)"
+"0","ws_lpmf_mm(train, 2, init, FU, FV)"
+"1","Called from: "
+"1","ws_lpmf_mm(train, 2, init, FU, FV)
+"
+"0","n"
+"1","debug at ws_lpmf_mm.R#69: "
+"1","grad <- grad_ws_lpmf(df, t(U), t(V), t(FU), t(FV), t(WU), t(WV), 
+"
+"1","    sig2/sig2u, sig2/sig2v, sig2/sig2wu, sig2/sig2wv, batch, 
+"
+"1","    nrow(data))
+"
+"0","n"

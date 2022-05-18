@@ -1,0 +1,5 @@
+"0","user_idx <- unique(train$User.ID)"
+"0","user_book <- lapply(user_idx, function(id){"
+"0","  df <- train[which(train$User.ID == id), ]"
+"0","  return(df$ISBN)"
+"0","})"

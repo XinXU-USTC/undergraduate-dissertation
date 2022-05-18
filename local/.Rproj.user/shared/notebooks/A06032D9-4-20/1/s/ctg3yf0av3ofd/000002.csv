@@ -1,0 +1,6 @@
+"0","load(""bookavg_rslt.Rda"")"
+"0","cat(paste(""scaled: MAE:"", round(bookavg_rslt$mae, 4), ""\tRMSE: "", round(bookavg_rslt$rmse, 4)))"
+"1","scaled: MAE: 0.1762 	RMSE:  0.2252"
+"0","cat(paste(""\nnot scaled: MAE:"", round(bookavg_rslt$mae*9, 4), ""\tRMSE: "", round(bookavg_rslt$rmse*9, 4)))"
+"1","
+not scaled: MAE: 1.5862 	RMSE:  2.0268"

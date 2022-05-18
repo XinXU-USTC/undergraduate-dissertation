@@ -1,0 +1,7 @@
+"0","x <- c(0.8, 1, -1, -0.1, 1 , -0.8, 0.8)"
+"0","y <- c(1, -1, -0.1, 0.8, 0.9, 0, -0.8)"
+"0","t <- c(rep(""book"", 4), rep(""person"", 3))"
+"0","df <- data.frame(x = x, y = y, t = t)"
+"0","#colnames(df) <- c(""mythical v.s. realistic"", ""rational v.s. emotional"", ""type"")"
+"0","colnames(df) <- c(""虚幻-现实"", ""理性-感性"")"
+"0","rownames(df) <- c(""水浒传"", ""三国演义"", ""西游记"", ""红楼梦"", ""张三"", ""李四"", ""王五"")"

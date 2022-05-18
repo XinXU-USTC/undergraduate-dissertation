@@ -1,0 +1,4 @@
+"0","Ratings_by_year <- group_by(train, year) %>% summarise("
+"0","  avg = mean(Book.Rating)*9,"
+"0","  sd = sd(Book.Rating)*9"
+"0",")"

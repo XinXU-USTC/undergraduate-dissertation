@@ -1,0 +1,6 @@
+"0","load(""result/lpmf/gd-2.Rda"")"
+"0","dist <- NULL"
+"0","for(i in 1:nrow(train)){"
+"0","  dist[i] <- sqrt(sum(result$U[, train[i, ""ISBN""]]^2))"
+"0","}"
+"0","train$dist <-dist"

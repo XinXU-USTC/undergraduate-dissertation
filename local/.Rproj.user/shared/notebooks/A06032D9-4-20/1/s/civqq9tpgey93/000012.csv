@@ -1,0 +1,1 @@
+"0","barplot(grp_num[3:11]/sum(grp_num[3:11]), col=""#69b3a2"", names.arg = names(grp_num)[3:11], las = 3)"

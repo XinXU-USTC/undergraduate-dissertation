@@ -1,0 +1,2 @@
+"0","set.seed(123)"
+"0","rst.sim.lpmf <- lpmf_mm(strain, stest, 3, c(1e-2, 1, 1), batch = 5e2, M = 1e2, N = 1e4, max_iter = 2e2)"

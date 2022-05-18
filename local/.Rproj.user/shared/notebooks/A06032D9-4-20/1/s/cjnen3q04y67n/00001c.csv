@@ -1,0 +1,1 @@
+"0","plot(1:length(result$tr.mae), result$tr.mae, col = ""red"", main = ""LPMF MAE"", xlab = ""epoch"", ylab = ""MAE"", type = ""l"")"

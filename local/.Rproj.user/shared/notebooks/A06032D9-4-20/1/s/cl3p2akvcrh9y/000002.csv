@@ -1,0 +1,4 @@
+"0","train.book.avg <- group_by(train, ISBN) %>% summarise("
+"0","  avg.rating = mean(Book.Rating)"
+"0",")"
+"0","test <- test[which(test$ISBN %in% train.book.avg$ISBN),]"

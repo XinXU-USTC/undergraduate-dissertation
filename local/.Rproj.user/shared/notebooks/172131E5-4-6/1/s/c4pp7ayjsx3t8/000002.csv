@@ -1,0 +1,5 @@
+"0","#set.seed(123)"
+"0","result <- lpmf_mm(train, 4, c(1e-3, 3, 3), verbose = TRUE, batch = 1e4)"
+"2","Error in lpmf_mm(train, 4, c(0.001, 3, 3), verbose = TRUE, batch = 10000) : 
+  argument ""init"" is missing, with no default
+"

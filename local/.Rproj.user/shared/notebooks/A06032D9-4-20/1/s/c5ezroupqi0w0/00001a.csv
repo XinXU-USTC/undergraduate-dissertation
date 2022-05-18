@@ -1,0 +1,2 @@
+"0","par(mfrow = c(1, 2))"
+"0","plot(2^(1:4), mm.mae, type = ""l"", col = ""red"", xlab = ""dimension"", ylab = ""MAE"", main = ""LPMF: MAE-Dimension"", xaxt = ""none"", ylim = c(0.14, 0.18))"

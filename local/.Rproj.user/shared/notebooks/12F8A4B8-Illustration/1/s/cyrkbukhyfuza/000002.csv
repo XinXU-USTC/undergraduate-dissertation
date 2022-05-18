@@ -1,0 +1,5 @@
+"0","Books$Year.Of.Publication <- as.integer(Books$Year.Of.Publication)
+"
+"2","Warning:"
+"2"," NAs introduced by coercion
+"

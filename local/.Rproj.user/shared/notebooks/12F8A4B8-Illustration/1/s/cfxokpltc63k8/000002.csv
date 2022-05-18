@@ -1,0 +1,1 @@
+"0","ggplot(data = NULL, aes(x = rep(0:(n-1), 2), y=rmse, color = model))+geom_point()+geom_line()+geom_abline(slope = 0, intercept = 9*sbookavg_rslt$rmse, color = ""red"", size = 0.5, linetype = ""dashed"")+xlab(""Epoch"")+ylab(""RMSE"")"

@@ -1,0 +1,8 @@
+"0","FU <- matrix(0, nrow = N, ncol = 2) "
+"0","FU[, 1] <- 1"
+"0","FU[, 2] <- Users$Age"
+"0","FU[which(Users$Age %in% 81:90), 2] <- 81"
+"0","FU[which(Users$Age %in% 91:100), 2] <- 82"
+"0","FU[which(Users$Age == 0), 2] <- 6"
+"0","FU[, 2] <- FU[, 2] - 6"
+"0","FU <- t(FU)"

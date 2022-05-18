@@ -1,0 +1,7 @@
+"0","train.book.dist <- group_by(train, ISBN) %>% summarise("
+"0","  num = length(User.ID),"
+"0","  dist = mean(dist)"
+"0",")"
+"0","train.book.dist <- group_by(train.book.dist, num) %>% summarise("
+"0","  d = mean(dist)"
+"0",")"

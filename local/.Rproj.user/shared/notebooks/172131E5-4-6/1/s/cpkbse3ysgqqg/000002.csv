@@ -1,0 +1,2 @@
+"0","train$Book.Rating <- train$Book.Rating/10"
+"0","test$Book.Rating <- test$Book.Rating/10"

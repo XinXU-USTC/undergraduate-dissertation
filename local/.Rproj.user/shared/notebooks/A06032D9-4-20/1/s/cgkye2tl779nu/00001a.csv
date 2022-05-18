@@ -1,0 +1,1 @@
+"0","points(1:length(result$tr.delta), log(result$tr.delta), col = ""blue"", pch  = 20)"

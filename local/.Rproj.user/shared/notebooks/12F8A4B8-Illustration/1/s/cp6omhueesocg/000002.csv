@@ -1,0 +1,4 @@
+"0","age <- NULL"
+"0","for(i in 1:nrow(train)){"
+"0","  age[i] <- Users[which(Users$User.ID == train[i, ]$User.ID), ""Age""]"
+"0","}"

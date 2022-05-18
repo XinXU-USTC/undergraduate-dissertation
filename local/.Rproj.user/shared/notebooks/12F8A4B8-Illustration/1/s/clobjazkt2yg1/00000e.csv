@@ -1,0 +1,5 @@
+"0","aux_grp <- NULL"
+"0","for(i in 1:9){"
+"0","  aux_grp <- c(aux_grp, rep(i, grp_num[i+2]))"
+"0","}"
+"0","ggplot(data = NULL, aes(x=as.factor(aux_grp)))+geom_bar()+ylab(""Number of Users"")+scale_x_discrete(""User Groups"", labels = c(""1""= names(grp_num)[3], ""2""= names(grp_num)[4], ""3""= names(grp_num)[5], ""4""= names(grp_num)[6], ""5""= names(grp_num)[7], ""6""= names(grp_num)[8], ""7""= names(grp_num)[9], ""8""= names(grp_num)[10], ""9""= names(grp_num)[11]))"

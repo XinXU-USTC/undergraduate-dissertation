@@ -1,0 +1,978 @@
+"0","set.seed(123)"
+"0","rst.sim.pmf <- pmf_mm(strain, stest, 10, c(1e-3, 3, 3), batch = 5e2, verbose = TRUE, M = 1e2, N = 1e3)"
+"1","[1]"
+"1"," ""2022-04-06 01:16:12 CST"""
+"1","
+"
+"1","Epoch 1 	 loss: NA 	 dlt: NA"
+"1","
+mae: 5.8429436883173 	rmse: 7.23101083646711 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","tr.mae"
+"1"," [1]"
+"1"," 6.149768"
+"1"," 5.842944"
+"1"," 5.475495"
+"1"," 5.235700"
+"1"," 5.101549"
+"1"," 5.021095"
+"1"," 4.972434"
+"1","
+"
+"1"," [8]"
+"1"," 4.943748"
+"1"," 4.922860"
+"1"," 4.908822"
+"1"," 4.899810"
+"1","
+"
+"0","c"
+"1","[1]"
+"1"," ""2022-04-06 01:16:40 CST"""
+"1","
+"
+"1","Epoch 11 	 loss: NaN 	 dlt: NaN"
+"1","
+mae: 4.8964258166772 	rmse: 5.70169866146296 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","tr.loss"
+"1"," [1]"
+"1","      NaN"
+"1","       NA"
+"1","       NA"
+"1","      NaN"
+"1"," 95.72256"
+"1","       NA"
+"1"," 81.36723"
+"1","
+"
+"1"," [8]"
+"1","      NaN"
+"1","       NA"
+"1","       NA"
+"1","      NaN"
+"1","      NaN"
+"1","      NaN"
+"1","       NA"
+"1","
+"
+"1","[15]"
+"1","      NaN"
+"1","
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","tr.mae"
+"1"," [1]"
+"1"," 6.149768"
+"1"," 5.842944"
+"1"," 5.475495"
+"1"," 5.235700"
+"1"," 5.101549"
+"1"," 5.021095"
+"1"," 4.972434"
+"1","
+"
+"1"," [8]"
+"1"," 4.943748"
+"1"," 4.922860"
+"1"," 4.908822"
+"1"," 4.899810"
+"1"," 4.896426"
+"1"," 4.891721"
+"1"," 4.887735"
+"1","
+"
+"1","[15]"
+"1"," 4.886085"
+"1"," 4.884577"
+"1"," 4.882362"
+"1"," 4.879593"
+"1","
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","[1]"
+"1"," ""2022-04-06 01:17:10 CST"""
+"1","
+"
+"1","Epoch 21 	 loss: 55.9932246220322 	 dlt: 0.0194909628704368"
+"1","
+mae: 4.87034759210492 	rmse: 5.72151034071931 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","[1]"
+"1"," ""2022-04-06 01:17:12 CST"""
+"1","
+"
+"1","Epoch 31 	 loss: 47.3401584450588 	 dlt: NaN"
+"1","
+mae: 4.84403107946736 	rmse: 5.75862162480521 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","[1]"
+"1"," ""2022-04-06 01:17:14 CST"""
+"1","
+"
+"1","Epoch 41 	 loss: NaN 	 dlt: NaN"
+"1","
+mae: 4.80362091517353 	rmse: 5.77022738187209 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","[1]"
+"1"," ""2022-04-06 01:17:17 CST"""
+"1","
+"
+"1","Epoch 51 	 loss: NA 	 dlt: NA"
+"1","
+mae: 4.74854262747627 	rmse: 5.76016444817617 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","tr.mae"
+"1"," [1]"
+"1"," 6.149768"
+"1"," 5.842944"
+"1"," 5.475495"
+"1"," 5.235700"
+"1"," 5.101549"
+"1"," 5.021095"
+"1"," 4.972434"
+"1","
+"
+"1"," [8]"
+"1"," 4.943748"
+"1"," 4.922860"
+"1"," 4.908822"
+"1"," 4.899810"
+"1"," 4.896426"
+"1"," 4.891721"
+"1"," 4.887735"
+"1","
+"
+"1","[15]"
+"1"," 4.886085"
+"1"," 4.884577"
+"1"," 4.882362"
+"1"," 4.879593"
+"1"," 4.876740"
+"1"," 4.878269"
+"1"," 4.874201"
+"1","
+"
+"1","[22]"
+"1"," 4.870348"
+"1"," 4.869961"
+"1"," 4.869661"
+"1"," 4.866369"
+"1"," 4.864907"
+"1"," 4.858777"
+"1"," 4.859319"
+"1","
+"
+"1","[29]"
+"1"," 4.855940"
+"1"," 4.850724"
+"1"," 4.847420"
+"1"," 4.844031"
+"1"," 4.838070"
+"1"," 4.835802"
+"1"," 4.832163"
+"1","
+"
+"1","[36]"
+"1"," 4.827838"
+"1"," 4.824911"
+"1"," 4.820523"
+"1"," 4.817477"
+"1"," 4.813382"
+"1"," 4.809271"
+"1"," 4.803621"
+"1","
+"
+"1","[43]"
+"1"," 4.799094"
+"1"," 4.794140"
+"1"," 4.789045"
+"1"," 4.784742"
+"1"," 4.777333"
+"1"," 4.773566"
+"1"," 4.764258"
+"1","
+"
+"1","[50]"
+"1"," 4.761771"
+"1"," 4.756100"
+"1"," 4.748543"
+"1"," 4.743048"
+"1"," 4.735799"
+"1"," 4.730446"
+"1"," 4.724857"
+"1","
+"
+"1","[57]"
+"1"," 4.718269"
+"1","
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","[1]"
+"1"," ""2022-04-06 01:17:27 CST"""
+"1","
+"
+"1","Epoch 61 	 loss: Inf 	 dlt: NaN"
+"1","
+mae: 4.68479208425119 	rmse: 5.73277805898098 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","[1]"
+"1"," ""2022-04-06 01:17:29 CST"""
+"1","
+"
+"1","Epoch 71 	 loss: NaN 	 dlt: NaN"
+"1","
+mae: 4.62045882106441 	rmse: 5.69856411614532 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","[1]"
+"1"," ""2022-04-06 01:17:31 CST"""
+"1","
+"
+"1","Epoch 81 	 loss: NaN 	 dlt: NaN"
+"1","
+mae: 4.56046352830247 	rmse: 5.66224332349472 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","[1]"
+"1"," ""2022-04-06 01:17:33 CST"""
+"1","
+"
+"1","Epoch 91 	 loss: NaN 	 dlt: NaN"
+"1","
+mae: 4.50527607714601 	rmse: 5.62578772127594 	par: 0.001 3 3 
+"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","c"
+"1","Called from: "
+"1","pmf_mm(strain, stest, 10, c(0.001, 3, 3), batch = 500, verbose = TRUE, 
+"
+"1","    M = 100, N = 1000)
+"
+"0","tr.mae"
+"1","  [1]"
+"1"," 6.149768"
+"1"," 5.842944"
+"1"," 5.475495"
+"1"," 5.235700"
+"1"," 5.101549"
+"1"," 5.021095"
+"1"," 4.972434"
+"1","
+"
+"1","  [8]"
+"1"," 4.943748"
+"1"," 4.922860"
+"1"," 4.908822"
+"1"," 4.899810"
+"1"," 4.896426"
+"1"," 4.891721"
+"1"," 4.887735"
+"1","
+"
+"1"," [15]"
+"1"," 4.886085"
+"1"," 4.884577"
+"1"," 4.882362"
+"1"," 4.879593"
+"1"," 4.876740"
+"1"," 4.878269"
+"1"," 4.874201"
+"1","
+"
+"1"," [22]"
+"1"," 4.870348"
+"1"," 4.869961"
+"1"," 4.869661"
+"1"," 4.866369"
+"1"," 4.864907"
+"1"," 4.858777"
+"1"," 4.859319"
+"1","
+"
+"1"," [29]"
+"1"," 4.855940"
+"1"," 4.850724"
+"1"," 4.847420"
+"1"," 4.844031"
+"1"," 4.838070"
+"1"," 4.835802"
+"1"," 4.832163"
+"1","
+"
+"1"," [36]"
+"1"," 4.827838"
+"1"," 4.824911"
+"1"," 4.820523"
+"1"," 4.817477"
+"1"," 4.813382"
+"1"," 4.809271"
+"1"," 4.803621"
+"1","
+"
+"1"," [43]"
+"1"," 4.799094"
+"1"," 4.794140"
+"1"," 4.789045"
+"1"," 4.784742"
+"1"," 4.777333"
+"1"," 4.773566"
+"1"," 4.764258"
+"1","
+"
+"1"," [50]"
+"1"," 4.761771"
+"1"," 4.756100"
+"1"," 4.748543"
+"1"," 4.743048"
+"1"," 4.735799"
+"1"," 4.730446"
+"1"," 4.724857"
+"1","
+"
+"1"," [57]"
+"1"," 4.718269"
+"1"," 4.712434"
+"1"," 4.705038"
+"1"," 4.700239"
+"1"," 4.690300"
+"1"," 4.684792"
+"1"," 4.678975"
+"1","
+"
+"1"," [64]"
+"1"," 4.672806"
+"1"," 4.667015"
+"1"," 4.660942"
+"1"," 4.652611"
+"1"," 4.646592"
+"1"," 4.640029"
+"1"," 4.633741"
+"1","
+"
+"1"," [71]"
+"1"," 4.627896"
+"1"," 4.620459"
+"1"," 4.613630"
+"1"," 4.609469"
+"1"," 4.602528"
+"1"," 4.597122"
+"1"," 4.591143"
+"1","
+"
+"1"," [78]"
+"1"," 4.584010"
+"1"," 4.577932"
+"1"," 4.571250"
+"1"," 4.564644"
+"1"," 4.560464"
+"1"," 4.555015"
+"1"," 4.548227"
+"1","
+"
+"1"," [85]"
+"1"," 4.544823"
+"1"," 4.537567"
+"1"," 4.531411"
+"1"," 4.526119"
+"1"," 4.521377"
+"1"," 4.516097"
+"1"," 4.511192"
+"1","
+"
+"1"," [92]"
+"1"," 4.505276"
+"1"," 4.499932"
+"1"," 4.495798"
+"1"," 4.491780"
+"1"," 4.485785"
+"1"," 4.480073"
+"1"," 4.476292"
+"1","
+"
+"1"," [99]"
+"1"," 4.470428"
+"1"," 4.466926"
+"1","
+"
+"0","Q"

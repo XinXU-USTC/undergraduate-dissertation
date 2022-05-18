@@ -1,0 +1,2 @@
+"0","par(mfrow = c(1, 3))"
+"0","plot(1:9, mae.lpmf, col = ""blue"", type = ""l"", xlab = ""user group"", ylab = ""MAE"", main = ""MAE: CPMF vs LPMF"", xaxt = ""none"")"

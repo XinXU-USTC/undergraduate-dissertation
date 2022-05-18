@@ -1,0 +1,772 @@
+---
+title: "4-20"
+author:
+  - XU, Xin
+documentclass: ctexart
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+---
+```{r}
+library(dplyr)
+library(Rcpp)
+```
+
+# Data Pre-processing
+```{r}
+Ratings <- read.csv("archive/Ratings.csv")
+Ratings <- Ratings[Ratings$Book.Rating != 0, ]
+Ratings_by_users <- group_by(Ratings, User.ID)
+user.Rating <- Ratings_by_users %>% summarise(
+  num = length(Book.Rating),
+  avg.rating = mean(Book.Rating)
+)
+num.Rating <- group_by(user.Rating, num) %>% summarise(
+  users = length(avg.rating)
+)
+```
+
+## Getting Training Set and Test Set
+```{r eval=FALSE}
+train <- NULL
+test <- NULL
+
+for(user in user.Rating$User.ID){
+  idx <- which(Ratings$User.ID == user)
+  n <- length(idx)
+  n.train <- ceiling(n*0.7)
+  if(length(idx) > 1){
+    idx.train <- sample(idx, size = n.train)
+    idx.test <- setdiff(idx, idx.train)
+    train.aux <- Ratings[idx.train, ]
+    test.aux <- Ratings[idx.test, ]
+    train <- rbind(train, train.aux)
+    test <- rbind(test, test.aux)
+  }else{
+    train.aux <- Ratings[idx, ]
+    train <- rbind(train, train.aux)
+  }
+}
+
+write.csv(train, file = "archive/train0.csv")
+write.csv(test, file = "archive/test0.csv")
+```
+
+## ISBN
+```{r}
+N <- max(Ratings$User.ID)
+book_idx <- unique(Ratings$ISBN)
+M <- length(book_idx)
+book_idx <- 1:M
+names(book_idx) <- unique(Ratings$ISBN)
+train <- read.csv("archive/train0.csv")
+train$ISBN <- book_idx[train$ISBN]
+test <- read.csv("archive/test0.csv")
+test$ISBN <- book_idx[test$ISBN]
+```
+
+## Romve Some Entries
+```{r}
+train.book.avg <- group_by(train, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+test <- test[which(test$ISBN %in% train.book.avg$ISBN),]
+```
+
+```{r echo=FALSE}
+cat(paste("There are", N, "users and", M, "books.\n"))
+cat(paste("There are", nrow(train), "examples in the training set and", nrow(test), "examples in the test set."))
+```
+
+
+## User Groups
+```{r echo=FALSE, eval=FALSE}
+grp <- list(0, 1:3, 4:6, 7:9,
+            10:13, 14:17,
+            18:19, 20:23, 24:50, 
+            51:100, 100:1400)
+grp_df <- lapply(grp, function(x){
+  idx <- which(user.Rating$num %in% x)
+  user <- user.Rating$User.ID[idx]
+  user_idx <- which(test$User.ID %in% user)
+  return(test[user_idx, ])
+})
+save(grp_df, file = "grp_df.Rda")
+```
+
+```{r echo=FALSE}
+load("grp_df.Rda")
+grp_num <- sapply(grp_df, function(x){
+  nrow(x)
+})
+names(grp_num) <- c("0", "1-3", "4-6", "7-9", "10-13", "14-17", "18-19", "20-23", "24-50", "51-100", ">100")
+```
+
+```{r}
+par(mfrow = c(1, 2))
+barplot(grp_num/sum(grp_num))
+barplot(grp_num[-11]/sum(grp_num[-11]))
+```
+
+# book average
+```{r eval=FALSE}
+train <- read.csv("archive/train0.csv")
+train$ISBN <- book_idx[train$ISBN]
+test <- read.csv("archive/test0.csv")
+test$ISBN <- book_idx[test$ISBN]
+train$Book.Rating <- (train$Book.Rating - 1)/9
+test$Book.Rating <- (test$Book.Rating - 1)/9
+train.book.avg <- group_by(train, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+test <- test[which(test$ISBN %in% train.book.avg$ISBN),]
+book_avg <- train.book.avg$avg.rating
+names(book_avg) <- train.book.avg$ISBN
+book_idx1 <- names(book_avg)
+Rcpp::sourceCpp("cpp/pred_bookavg.cpp")
+bookavg_rslt <- pred_bookavg(test, book_avg, book_idx1)
+save(bookavg_rslt, file = "bookavg_rslt.Rda")
+```
+```{r echo=FALSE}
+load("bookavg_rslt.Rda")
+cat(paste("scaled: MAE:", round(bookavg_rslt$mae, 4), "\tRMSE: ", round(bookavg_rslt$rmse, 4)))
+cat(paste("\nnot scaled: MAE:", round(bookavg_rslt$mae*9, 4), "\tRMSE: ", round(bookavg_rslt$rmse*9, 4)))
+```
+
+```{r}
+head(cbind(test[, -1], bookavg_rslt$prediction), 10)
+```
+
+# PMF
+```{r echo=FALSE}
+knitr::include_graphics("figures/pmf1.jpg")
+knitr::include_graphics("figures/pmf2.jpg")
+knitr::include_graphics("figures/pmf3.jpg")
+knitr::include_graphics("figures/pmf4.jpg")
+```
+
+## Implementation
+```{r echo=FALSE}
+knitr::include_graphics("figures/imp1.jpg")
+```
+\newpage
+```{r echo=FALSE}
+knitr::include_graphics("figures/imp2.jpg")
+```
+```{r echo=FALSE}
+knitr::include_graphics("figures/imp3.jpg")
+```
+
+## Simulation
+```{r eval=FALSE}
+set.seed(123)
+A <- matrix(rnorm(1e4*4, sd = sqrt(1)), ncol = 1e4)
+B <- matrix(rnorm(1e2*4, sd = sqrt(1)), ncol = 1e2)
+E <- matrix(rnorm(1e4*1e2, sd = sqrt(1e-2)), ncol = 1e2)
+aux <- t(A) %*% B
+aux <- 1/(1+exp(-aux))
+obs <- aux + E
+obs <- ifelse(obs < 0, 0, obs)
+obs <- ifelse(obs > 1, 1, obs)
+obs <- floor(9*obs)
+W <- matrix(sample(0:2, 1e4*1e2, prob = c(0.9, 0.07, 0.03), replace = TRUE), ncol = 1e2)
+strain <- data.frame(User.ID = c(), ISBN = c(), Book.Rating = c())
+stest <- data.frame(User.ID = c(), ISBN = c(), Book.Rating = c())
+for(i in 1:1e4){
+  for(j in 1:1e2){
+    if(W[i, j] == 1){#train
+      strain <- rbind(strain, c(i, j, obs[i, j]))
+    }
+    if(W[i, j] == 2){#test
+      stest <- rbind(stest, c(i, j, obs[i, j]))
+    }
+  }
+}
+colnames(strain) <- c("User.ID", "ISBN", "Book.Rating")
+colnames(stest) <- c("User.ID", "ISBN", "Book.Rating")
+strain.book.avg <- group_by(strain, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+stest <- stest[which(stest$ISBN %in% strain.book.avg$ISBN),]
+write.csv(strain, file = "archive/strain0.csv")
+write.csv(stest, file = "archive/stest0.csv")
+```
+
+```{r eval=FALSE, echo=FALSE}
+strain <- read.csv("archive/strain0.csv")
+stest <- read.csv("archive/stest0.csv")
+strain$Book.Rating <- (strain$Book.Rating)/9
+stest$Book.Rating <- (stest$Book.Rating)/9
+strain.book.avg <- group_by(strain, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+sbook_avg <- strain.book.avg$avg.rating
+names(sbook_avg) <- strain.book.avg$ISBN
+sbook_idx1 <- names(sbook_avg)
+Rcpp::sourceCpp("cpp/pred_bookavg.cpp")
+sbookavg_rslt <- pred_bookavg(stest, sbook_avg, sbook_idx1)
+save(sbookavg_rslt, file = "sbookavg_rslt.Rda")
+```
+```{r echo=FALSE}
+cat(paste("MAE:", round(sbookavg_rslt$mae, 4), "\tRMSE: ", round(sbookavg_rslt$rmse, 4)))
+```
+
+```{r echo=FALSE, eval=FALSE}
+sourceCpp("cpp/grad_pmf.cpp")
+sourceCpp("cpp/loss_pmf.cpp")
+source("cpp/loss/loss_pmf.R")
+sourceCpp("cpp/pred_pmf.cpp")
+source("R/pmf_mm.R")
+```
+```{r echo=FALSE, eval=FALSE}
+strain <- read.csv("archive/strain0.csv")
+stest <- read.csv("archive/stest0.csv")
+set.seed(123)
+rst.sim.pmf <- pmf_mm(strain, stest, 4, c(1e-10, 1, 1), batch = 2e3, M = 1e2, N = 1e4, max_iter = 80, t = 1e-3)
+save(rst.sim.pmf, file = "rst_sim_pmf.Rda")
+```
+
+```{r echo=FALSE}
+load("rst_sim_pmf.Rda")
+par(mfrow = c(1, 3))
+plot((1:length(rst.sim.pmf$tr.mae)), rst.sim.pmf$tr.mae, col = "red", main = "MAE", xlab = "epoch", ylab = "MAE", type = "l")
+points((1:length(rst.sim.pmf$tr.mae)), rst.sim.pmf$tr.mae, col = "blue", pch = 20)
+plot((1:length(rst.sim.pmf$tr.delta)), log(rst.sim.pmf$tr.delta), col = "red", main = "log Relative Change of Loss", xlab = "epoch", ylab = "delta", type = "l")
+points((1:length(rst.sim.pmf$tr.delta)), log(rst.sim.pmf$tr.delta), col = "blue", pch = 20)
+plot((1:length(rst.sim.pmf$tr.rmse)), rst.sim.pmf$tr.rmse, col = "red", main = "RMSE", xlab = "epoch", ylab = "RMSE", type = "l")
+points((1:length(rst.sim.pmf$tr.rmse)), rst.sim.pmf$tr.rmse, col = "blue", pch = 20)
+cat(paste("\nPMF:\tMAE:", round(rst.sim.pmf$mae, 4), "\tRMSE: ", round(rst.sim.pmf$rmse, 4)))
+cat(paste("\nBook Average:\tMAE:", round(sbookavg_rslt$mae*9, 4), "\tRMSE: ", round(sbookavg_rslt$rmse*9, 4)))
+```
+
+## Real data set
+```{r echo=FALSE}
+load("result/pmf/mm-2.Rda")
+par(mfrow = c(1, 3))
+plot(1:length(result$tr.rmse), result$tr.rmse, col = "red", main = "PMF RMSE", xlab = "epoch", ylab = "RMSE", type = "l")
+points(1:length(result$tr.rmse[1:10]), result$tr.rmse[1:10], col = "blue", pch  = 20)
+abline(h = bookavg_rslt$rmse*9, lty = 2)
+plot(1:length(result$tr.delta), log(result$tr.delta), col = "red", main = "PMF Relative Loss Change", xlab = "epoch", ylab = "log RLC", type = "l")
+points(1:length(result$tr.delta[1:10]), log(result$tr.delta[1:10]), col = "blue", pch  = 20)
+plot(1:length(result$tr.mae), result$tr.mae, col = "red", main = "PMF MAE", xlab = "epoch", ylab = "MAE", type = "l")
+points(1:length(result$tr.mae[1:10]), result$tr.mae[1:10], col = "blue", pch  = 20)
+abline(h = bookavg_rslt$mae*9, lty = 2)
+cat(paste("\nPMF", "\tMAE:", round(result$mae, 4), "\tRMSE:", round(result$rmse, 4)))
+cat(paste("\nBook Average", "\tMAE:", round(bookavg_rslt$mae*9, 4), "\tRMSE:", round(bookavg_rslt$rmse*9, 4)))
+```
+
+
+# Logistic PMF
+```{r echo=FALSE}
+knitr::include_graphics("figures/lpmf.jpg")
+knitr::include_graphics("figures/lpmf2.jpg")
+```
+
+## Simulation
+
+```{r echo=FALSE, eval=FALSE}
+sourceCpp("cpp/grad_lpmf.cpp")
+source("cpp/loss/loss_lpmf.R")
+sourceCpp("cpp/loss_lpmf.cpp")
+sourceCpp("cpp/pred_lpmf.cpp")
+source("R/lpmf_mm.R")
+```
+```{r echo=FALSE, eval=FALSE}
+strain <- read.csv("archive/strain0.csv")
+stest <- read.csv("archive/stest0.csv")
+strain$Book.Rating <- (strain$Book.Rating)/9
+stest$Book.Rating <- (stest$Book.Rating)/9
+set.seed(123)
+rst.sim.lpmf <- lpmf_mm(strain, stest, 4, c(1e-10, 1, 1), batch = 2e3, M = 1e2, N = 1e4, max_iter = 80, t = 0.3)
+save(rst.sim.lpmf, file = "rst_sim_lpmf.Rda")
+```
+
+```{r echo=FALSE}
+load("rst_sim_lpmf.Rda")
+par(mfrow = c(1, 3))
+plot((1:length(rst.sim.lpmf$tr.mae)), rst.sim.lpmf$tr.mae, col = "red", main = "MAE", xlab = "epoch", ylab = "MAE", type = "l")
+points((1:length(rst.sim.lpmf$tr.mae)), rst.sim.lpmf$tr.mae, col = "blue", pch = 20)
+plot((1:length(rst.sim.lpmf$tr.delta)), log(rst.sim.lpmf$tr.delta), col = "red", main = "log Relative Change of Loss", xlab = "epoch", ylab = "delta", type = "l")
+points((1:length(rst.sim.lpmf$tr.delta)), log(rst.sim.lpmf$tr.delta), col = "blue", pch = 20)
+plot((1:length(rst.sim.lpmf$tr.rmse)), rst.sim.lpmf$tr.rmse, col = "red", main = "RMSE", xlab = "epoch", ylab = "RMSE", type = "l")
+points((1:length(rst.sim.lpmf$tr.rmse)), rst.sim.lpmf$tr.rmse, col = "blue", pch = 20)
+cat(paste("\nLPMF:\tMAE:", round(rst.sim.lpmf$mae, 4), "\tRMSE: ", round(rst.sim.lpmf$rmse, 4)))
+cat(paste("\nBook Average:\tMAE:", round(sbookavg_rslt$mae*9, 4), "\tRMSE: ", round(sbookavg_rslt$rmse*9, 4)))
+```
+
+## Real data set
+
+### Momentum
+```{r echo=FALSE}
+load("result/lpmf/mm-4.Rda")
+par(mfrow = c(1, 3))
+plot(1:length(result$tr.rmse), result$tr.rmse, col = "red", main = "LPMF RMSE", xlab = "epoch", ylab = "RMSE", type = "l")
+points(1:length(result$tr.rmse[1:10]), result$tr.rmse[1:10], col = "blue", pch  = 20)
+abline(h = bookavg_rslt$rmse, lty = 2)
+plot(1:length(result$tr.delta), log(result$tr.delta), col = "red", main = "LPMF Relative Loss Change", xlab = "epoch", ylab = "log RLC", type = "l")
+points(1:length(result$tr.delta[1:10]), log(result$tr.delta[1:10]), col = "blue", pch  = 20)
+plot(1:length(result$tr.mae), result$tr.mae, col = "red", main = "LPMF MAE", xlab = "epoch", ylab = "MAE", type = "l")
+points(1:length(result$tr.mae[1:10]), result$tr.mae[1:10], col = "blue", pch  = 20)
+abline(h = bookavg_rslt$mae, lty = 2)
+cat(paste("\nLPMF Momentum", "\tMAE:", round(result$mae, 4), "\tRMSE:", round(result$rmse, 4)))
+cat(paste("\nBook Average", "\tMAE:", round(bookavg_rslt$mae, 4), "\tRMSE:", round(bookavg_rslt$rmse, 4)))
+```
+
+### SGD
+```{r echo=FALSE}
+load("result/lpmf/gd-4.Rda")
+par(mfrow = c(1, 3))
+plot(1:length(result$tr.rmse), result$tr.rmse, col = "red", main = "LPMF RMSE", xlab = "epoch", ylab = "RMSE", type = "l")
+points(1:length(result$tr.rmse), result$tr.rmse, col = "blue", pch  = 20)
+abline(h = bookavg_rslt$rmse, lty = 2)
+plot(1:length(result$tr.delta), log(result$tr.delta), col = "red", main = "LPMF Relative Loss Change", xlab = "epoch", ylab = "log RLC", type = "l")
+points(1:length(result$tr.delta), log(result$tr.delta), col = "blue", pch  = 20)
+plot(1:length(result$tr.mae), result$tr.mae, col = "red", main = "LPMF MAE", xlab = "epoch", ylab = "MAE", type = "l")
+points(1:length(result$tr.mae), result$tr.mae, col = "blue", pch  = 20)
+abline(h = bookavg_rslt$mae, lty = 2)
+cat(paste("\nLPMF SGD", "\tMAE:", round(result$mae, 4), "\tRMSE:", round(result$rmse, 4)))
+cat(paste("\nBook Average", "\tMAE:", round(bookavg_rslt$mae, 4), "\tRMSE:", round(bookavg_rslt$rmse, 4)))
+```
+
+### Dimension of the Feature Vectors
+```{r echo=FALSE}
+dir1 <- "result/lpmf/mm-"
+dir2 <- "result/lpmf/gd-"
+dir3 <- ".Rda"
+mm.mae <- NULL
+mm.rmse <- NULL
+gd.mae <- NULL
+gd.rmse <- NULL
+for(i in 1:4){
+  dim <- 2^i
+  load(paste0(dir1, dim, dir3))
+  mm.mae[i] <- result$mae
+  mm.rmse[i] <- result$rmse
+  load(paste0(dir2, dim, dir3))
+  gd.mae[i] <- result$mae
+  gd.rmse[i] <- result$rmse
+}
+```
+
+```{r echo=FALSE}
+par(mfrow = c(1, 2))
+plot(2^(1:4), mm.mae, type = "l", col = "red", xlab = "dimension", ylab = "MAE", main = "LPMF: MAE-Dimension", xaxt = "none", ylim = c(0.14, 0.18))
+points(2^(1:4), mm.mae, pch=20, col = "red")
+lines(2^(1:4), gd.mae, col = "blue", xlab = "dimension", ylab = "MAE")
+points(2^(1:4), gd.mae, pch=20, col = "blue")
+legend("topright", legend = c("momentum", "sgd"), col = c("red", "blue"), pch = 20, lty = 1)
+axis(1, at = 2^(1:4), labels = c(2, 4, 8, 16))
+plot(2^(1:4), mm.rmse, type = "l", col = "red", xlab = "dimension", ylab = "MAE", main = "LPMF: RMSE-Dimension", xaxt = "none", ylim = c(0.19, 0.24))
+points(2^(1:4), mm.rmse, pch=20, col = "red")
+lines(2^(1:4), gd.rmse, col = "blue", xlab = "dimension", ylab = "RMSE")
+points(2^(1:4), gd.rmse, pch=20, col = "blue")
+legend("topright", legend = c("momentum", "sgd"), col = c("red", "blue"), pch = 20, lty = 1)
+axis(1, at = 2^(1:4), labels = c(2, 4, 8, 16))
+```
+
+# Constrained PMF
+```{r echo=FALSE}
+knitr::include_graphics("figures/cpmf1.jpg")
+knitr::include_graphics("figures/cpmf2.jpg")
+knitr::include_graphics("figures/cpmf3.jpg")
+knitr::include_graphics("figures/cpmf4.jpg")
+knitr::include_graphics("figures/cpmf5.jpg")
+```
+
+## Simulation
+```{r echo=FALSE, eval=FALSE} 
+sourceCpp("cpp/user_cpmf.cpp")
+sourceCpp("cpp/grad_cpmf.cpp")
+source("cpp/loss/loss_cpmf.R")
+sourceCpp("cpp/loss_cpmf.cpp")
+sourceCpp("cpp/pred_cpmf.cpp")
+source("R/cpmf_mm.R")
+```
+
+```{r echo=FALSE, eval=FALSE}
+strain <- read.csv("archive/strain0.csv")
+stest <- read.csv("archive/stest0.csv")
+strain$Book.Rating <- (strain$Book.Rating)/9
+stest$Book.Rating <- (stest$Book.Rating)/9
+user_idx <- unique(strain$User.ID)
+user_book <- lapply(user_idx, function(id){
+  df <- strain[which(strain$User.ID == id), ]
+  return(df$ISBN)
+})
+sread <- list(user_idx = user_idx, user_book = user_book, user_num = sapply(user_book, function(x){
+  length(x)
+}))
+```
+```{r echo=FALSE, eval=FALSE}
+set.seed(123)
+rst.sim.cpmf <- cpmf_mm(strain, stest, sread, 4, c(1e-6, 1/2, 1, 1/2), batch = 3e3, M = 1e2, N = 1e4, max_iter = 20, t = 0.3)
+save(rst.sim.cpmf, file = "rst_sim_cpmf.Rda")
+```
+```{r echo=FALSE}
+load("rst_sim_cpmf.Rda")
+par(mfrow = c(1, 3))
+plot((1:length(rst.sim.cpmf$tr.mae)), rst.sim.cpmf$tr.mae, col = "red", main = "MAE", xlab = "epoch", ylab = "MAE", type = "l")
+points((1:length(rst.sim.cpmf$tr.mae)), rst.sim.cpmf$tr.mae, col = "blue", pch = 20)
+plot((1:length(rst.sim.cpmf$tr.delta)), log(rst.sim.cpmf$tr.delta), col = "red", main = "log Relative Change of Loss", xlab = "epoch", ylab = "delta", type = "l")
+points((1:length(rst.sim.cpmf$tr.delta)), log(rst.sim.cpmf$tr.delta), col = "blue", pch = 20)
+plot((1:length(rst.sim.cpmf$tr.rmse)), rst.sim.cpmf$tr.rmse, col = "red", main = "RMSE", xlab = "epoch", ylab = "RMSE", type = "l")
+points((1:length(rst.sim.cpmf$tr.rmse)), rst.sim.cpmf$tr.rmse, col = "blue", pch = 20)
+cat(paste("\nCPMF:\tMAE:", round(rst.sim.cpmf$mae, 4), "\tRMSE: ", round(rst.sim.cpmf$rmse, 4)))
+cat(paste("\nBook Average:\tMAE:", round(sbookavg_rslt$mae*9, 4), "\tRMSE: ", round(sbookavg_rslt$rmse*9, 4)))
+```
+
+## Real Data
+```{r eval=FALSE, echo=FALSE}
+user_idx <- unique(train$User.ID)
+user_book <- lapply(user_idx, function(id){
+  df <- train[which(train$User.ID == id), ]
+  return(df$ISBN)
+})
+read <- list(user_idx = user_idx, user_book = user_book, user_num = sapply(user_book, function(x){
+  length(x)
+}))
+save(read, file = "read.Rda")
+```
+```{r echo=FALSE}
+load("result/cpmf/mm-4.Rda")
+par(mfrow = c(1, 3))
+plot(1:length(result$tr.rmse), result$tr.rmse, col = "red", main = "CPMF RMSE", xlab = "epoch", ylab = "RMSE", type = "l")
+points(1:length(result$tr.rmse[1:10]), result$tr.rmse[1:10], col = "blue", pch  = 20)
+abline(h = bookavg_rslt$rmse, lty = 2)
+plot(1:length(result$tr.delta), log(result$tr.delta), col = "red", main = "CPMF Relative Loss Change", xlab = "epoch", ylab = "log RLC", type = "l")
+points(1:length(result$tr.delta[1:10]), log(result$tr.delta[1:10]), col = "blue", pch  = 20)
+plot(1:length(result$tr.mae), result$tr.mae, col = "red", main = "LPMF MAE", xlab = "epoch", ylab = "MAE", type = "l")
+points(1:length(result$tr.mae[1:10]), result$tr.mae[1:10], col = "blue", pch  = 20)
+abline(h = bookavg_rslt$mae, lty = 2)
+cat(paste("CPMF","\tMAE:", round(result$mae, 4), "\tRMSE:", round(result$rmse, 4)))
+load("result/lpmf/mm-4.Rda")
+cat(paste("\nLPMF","\tMAE:", round(result$mae, 4), "\tRMSE:", round(result$rmse, 4)))
+cat(paste("\nBook Average","\tMAE:", round(bookavg_rslt$mae, 4), "\tRMSE:", round(bookavg_rslt$rmse, 4)))
+```
+
+```{r echo=FALSE}
+load("result/cpmf/gd-8.Rda")
+result.cpmf <- result
+load("result/lpmf/gd-8.Rda")
+result.lpmf <- result
+load("read.Rda")
+sourceCpp("cpp/user_cpmf.cpp")
+sourceCpp("cpp/pred_cpmf.cpp")
+sourceCpp("cpp/pred_lpmf.cpp")
+
+load("grp_df.Rda")
+grp_df[[1]] <- NULL
+grp_df[[1]] <- NULL
+grp_rst <- lapply(grp_df, function(df){
+  df$Book.Rating <- (df$Book.Rating-1)/9
+  lpmf <-  pred_lpmf(df, t(result.lpmf$U), t(result.lpmf$V))
+  cpmf <- pred_cpmf(df,t(result.cpmf$U), t(result.cpmf$V))
+  avg <- pred_bookavg(df, book_avg, book_idx1)
+  return(list(lpmf = lpmf, cpmf = cpmf, avg = avg))
+})
+mae.lpmf <- NULL
+mae.cpmf <- NULL
+mae.avg <- NULL
+rmse.lpmf <- NULL
+rmse.cpmf <- NULL
+rmse.avg <- NULL
+for(i in 1:9){
+  aaa <- grp_rst[[i]]
+  lpmf.aaa <- aaa$lpmf
+  cpmf.aaa <- aaa$cpmf
+  avg.aaa <- aaa$avg
+  mae.lpmf[i] <- lpmf.aaa$mae
+  mae.cpmf[i] <- cpmf.aaa$mae
+  mae.avg[i] <- avg.aaa$mae
+  rmse.lpmf[i] <- lpmf.aaa$rmse
+  rmse.cpmf[i] <- cpmf.aaa$rmse
+  rmse.avg[i] <- avg.aaa$rmse
+}
+
+
+```
+
+```{r echo=FALSE}
+par(mfrow = c(1, 3))
+plot(1:9, mae.lpmf, col = "blue", type = "l", xlab = "user group", ylab = "MAE", main = "MAE: CPMF vs LPMF", xaxt = "none", ylim = c(0.14, 0.19))
+axis(1, at = 1:9, labels = names(grp_num[3:11]))
+points(1:9, mae.lpmf, col = "blue", pch = 20)
+lines(1:9, mae.cpmf, col = "red", type = "l", xlab = "user group", ylab = "MAE")
+points(1:9, mae.cpmf, col = "red", pch = 20)
+lines(1:9, mae.avg, col = "black", type = "l", xlab = "user group", ylab = "MAE")
+points(1:9, mae.avg, col = "black", pch = 20)
+legend("bottomleft", legend = c("LPMF", "CPMF", "avg"), lty = 1, col = c("blue", "red", "black"), pch = 20)
+barplot(grp_num[3:11]/sum(grp_num[3:11]))
+plot(1:9, rmse.lpmf, col = "blue", type = "l", xlab = "user group", ylab = "RMSE", main = "RMSE: CPMF vs LPMF", xaxt = "none", ylim = c(0.2, 0.24))
+axis(1, at = 1:9, labels = names(grp_num[3:11]))
+points(1:9, rmse.lpmf, col = "blue", pch = 20)
+lines(1:9, rmse.cpmf, col = "red", type = "l", xlab = "user group", ylab = "MAE", main = "MAE: CPMF vs LPMF")
+points(1:9, rmse.cpmf, col = "red", pch = 20)
+lines(1:9, rmse.avg, col = "black", type = "l", xlab = "user group", ylab = "MAE")
+points(1:9, rmse.avg, col = "black", pch = 20)
+legend("bottomleft", legend = c("LPMF", "CPMF", "avg"), lty = 1, col = c("blue", "red", "black"), pch = 20)
+```
+
+
+
+# Users' Information
+```{r}
+Users <- read.csv("archive/Users.csv")
+Users <- Users[1:N, ]
+summary(Users)
+sum(is.na(Users$Age))/length(Users$Age)
+```
+
+## pre-processing
+```{r}
+Users[is.na(Users$Age), "Age"] <- 0
+Users[which(Users$Age > 100), "Age"] <- 0
+Users[which(Users$Age < 7), "Age"] <- 0
+```
+```{r}
+summary(Users)
+length(unique(Users$Location))
+```
+## Check intuition
+
+```{r}
+user.Rating <- merge(user.Rating, Users)
+```
+
+```{r}
+Rating_by_location <- group_by(user.Rating, Location) %>% summarise(
+  user.num = length(num),
+  avg.rating = sum(num*avg.rating)/sum(num)
+)
+Rating_by_age <- group_by(user.Rating, Age) %>% summarise(
+  user.num = length(num),
+  avg.rating = sum(num*avg.rating)/sum(num)
+)
+```
+
+### merge some age groups
+
+```{r}
+FU <- matrix(0, nrow = N, ncol = 2) 
+FU[, 1] <- 1
+FU[, 2] <- Users$Age
+FU[which(Users$Age %in% 81:90), 2] <- 81
+FU[which(Users$Age %in% 91:100), 2] <- 82
+FU[which(Users$Age == 0), 2] <- 6
+FU[, 2] <- FU[, 2] - 6
+FU <- t(FU)
+save(FU, file = "FU.Rda")
+```
+
+### find the country of users
+```{r}
+loc <- strsplit(Users$Location, ",")
+loc <- sapply(loc, function(x){
+  if(length(x) != 3){
+    return(NA)
+  }else{
+    return(x[3])
+  }
+})
+```
+
+
+# Books' Information
+```{r}
+Books <- read.csv("archive/Books.csv")
+Books <- Books[Books$ISBN %in% names(book_idx), ]
+Books$Year.Of.Publication <- as.integer(Books$Year.Of.Publication)
+Books$Year.Of.Publication[which(Books$Year.Of.Publication > 2004)] <- 0
+Books$Year.Of.Publication[is.na(Books$Year.Of.Publication)] <- 0
+summary(Books) 
+length(unique(Books$Book.Title))
+length(unique(Books$Book.Author))
+length(unique(Books$Publisher))
+length(unique(Books$Year.Of.Publication))
+```
+
+## check intuition
+```{r}
+book_rating <- group_by(Ratings, ISBN)%>% summarise(
+  num = length(Book.Rating),
+  avg.rating = mean(Book.Rating)
+)
+book_rating <- merge(book_rating, Books)
+Rating_by_publisher <- group_by(book_rating, Publisher) %>% summarise(
+  user.num = length(num),
+  avg.rating = sum(num*avg.rating)/sum(num)
+)
+Rating_by_year <- group_by(book_rating, Year.Of.Publication) %>% summarise(
+  user.num = length(num),
+  avg.rating = sum(num*avg.rating)/sum(num)
+)
+```
+
+## diving groups
+```{r}
+FV <- matrix(0, ncol = 2, nrow = M)
+FV[, 1] <- 1
+FV[book_idx[Books$ISBN], 2] <-  Books$Year.Of.Publication
+FV[which(FV[, 2] < 1920 & FV[, 2] != 0), 2] <- 1
+FV[which(FV[, 2] %in% 1920:1929), 2] <- 2
+FV[which(FV[, 2] %in% 1930:1939), 2] <- 3
+FV[which(FV[, 2] %in% 1940:1949), 2] <- 4
+FV[which(FV[, 2] > 1949), 2] <- FV[which(FV[, 2] > 1949), 2] - 1945
+FV <- t(FV)
+save(FV, file = "FV.Rda")
+```
+
+# warm start lpmf
+```{r}
+train <- read.csv("archive/train0.csv")
+train$ISBN <- book_idx[train$ISBN]
+test <- read.csv("archive/test0.csv")
+test$ISBN <- book_idx[test$ISBN]
+train.book.avg <- group_by(train, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+test <- test[which(test$ISBN %in% train.book.avg$ISBN),]
+train$Book.Rating <- (train$Book.Rating - 1)/9
+test$Book.Rating <- (test$Book.Rating - 1)/9
+```
+```{r}
+sourceCpp("cpp/grad_ws_lpmf.cpp")
+#source("cpp/grad_ws_lpmf.R")
+source("cpp/loss/loss_ws_lpmf.R")
+sourceCpp("cpp/loss_ws_lpmf.cpp")
+sourceCpp("cpp/pred_ws_lpmf.cpp")
+source("ws_lpmf_mm.R")
+source("ws_lpmf_gd.R")
+```
+
+```{r}
+load("FU.Rda")
+load("FV.Rda")
+set.seed(123)
+init <- c(1e-8, 1, 1, 1e3, 1e3)
+result_mm <- ws_lpmf_mm(train, 4, init, FU, FV, batch = 18e4, verbose = TRUE, t = 0.9, max_iter = 40)
+```
+
+
+```{r}
+load("FU.Rda")
+load("FV.Rda")
+set.seed(123)
+init <- c(3e-8, 10, 10, 10, 10)
+dim <- 4
+U <- matrix(rnorm(dim, sd = 10), nrow = dim, ncol = N)
+V <- matrix(rnorm(dim, sd = 10), nrow = dim, ncol = M)
+a <- max(FU[2, ])
+b <- max(FV[2, ])
+WU <- matrix(rnorm(1+a, sd = sqrt(10)), nrow = 1+a, ncol = dim)
+WV <- matrix(rnorm(1+b, sd = sqrt(10)), nrow = 1+b, ncol = dim)
+result_gd <- ws_lpmf_gd(data = train, dim = dim, init = init, U = U, V = V, WU = WU, WV = WV, FU = FU, FV = FV, batch = 18e4, verbose = TRUE, max_iter = 40, eps = 1e-8)
+```
+
+
+```{r echo=FALSE}
+load("result/ws_lpmf/mm-2.Rda")
+result.ws <- result
+load("result/lpmf/gd-2.Rda")
+result.lpmf <- result
+sourceCpp("cpp/pred_ws_lpmf.cpp")
+sourceCpp("cpp/pred_lpmf.cpp")
+sourceCpp("cpp/pred_bookavg.cpp")
+load("FU.Rda")
+load("FV.Rda")
+load("grp_df.Rda")
+grp_df[[1]] <- NULL
+grp_df[[1]] <- NULL
+grp_rst <- lapply(grp_df, function(df){
+  df$Book.Rating <- (df$Book.Rating-1)/9
+  lpmf <-  pred_lpmf(df, t(result.lpmf$U), t(result.lpmf$V))
+  ws <- pred_ws_lpmf(df,t(FU), t(FV), t(result.ws$WU), t(result.ws$WV))
+  avg <- pred_bookavg(df, book_avg, book_idx1)
+  return(list(lpmf = lpmf, ws = ws, avg = avg))
+})
+mae.lpmf <- NULL
+mae.ws <- NULL
+mae.avg <- NULL
+rmse.lpmf <- NULL
+rmse.ws <- NULL
+rmse.avg <- NULL
+for(i in 1:9){
+  aaa <- grp_rst[[i]]
+  lpmf.aaa <- aaa$lpmf
+  ws.aaa <- aaa$ws
+  avg.aaa <- aaa$avg
+  mae.lpmf[i] <- lpmf.aaa$mae
+  mae.ws[i] <- ws.aaa$mae
+  mae.avg[i] <- avg.aaa$mae
+  rmse.lpmf[i] <- lpmf.aaa$rmse
+  rmse.ws[i] <- ws.aaa$rmse
+  rmse.avg[i] <- avg.aaa$rmse
+}
+
+
+```
+
+```{r echo=FALSE}
+#png("plot/warm start.png", width = 600, height = 400)
+par(mfrow = c(1, 3))
+plot(1:9, mae.lpmf, col = "blue", type = "l", ylab = "MAE", xaxt = "none", ylim = c(0.145, 0.185), xlab = "")
+axis(1, at = 1:9, labels = names(grp_num[3:11]), las = 3)
+points(1:9, mae.lpmf, col = "blue", pch = 20)
+lines(1:9, mae.ws, col = "red", type = "l", ylab = "MAE")
+points(1:9, mae.ws, col = "red", pch = 20)
+lines(1:9, mae.avg, col = "black", type = "l", ylab = "MAE")
+points(1:9, mae.avg, col = "black", pch = 20)
+legend("bottomleft", legend = c("LPMF", "ws", "avg"), lty = 1, col = c("blue", "red", "black"), pch = 20)
+barplot(grp_num[3:11]/sum(grp_num[3:11]), col="#69b3a2", names.arg = names(grp_num)[3:11], las = 3)
+plot(1:9, rmse.lpmf, col = "blue", type = "l", ylab = "RMSE", xaxt = "none", ylim = c(0.195, 0.235), xlab = "")
+axis(1, at = 1:9, labels = names(grp_num[3:11]), las = 3)
+points(1:9, rmse.lpmf, col = "blue", pch = 20)
+lines(1:9, rmse.ws, col = "red", type = "l", ylab = "MAE", main = "MAE: ws vs LPMF")
+points(1:9, rmse.ws, col = "red", pch = 20)
+lines(1:9, rmse.avg, col = "black", type = "l", ylab = "MAE")
+points(1:9, rmse.avg, col = "black", pch = 20)
+legend("bottomleft", legend = c("LPMF", "ws", "avg"), lty = 1, col = c("blue", "red", "black"), pch = 20)
+#dev.off()
+```
+
+
+# NDCG@K
+```{r}
+train <- read.csv("archive/train0.csv")
+train$ISBN <- book_idx[train$ISBN]
+test <- read.csv("archive/test0.csv")
+test$ISBN <- book_idx[test$ISBN]
+train.book.avg <- group_by(train, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+test <- test[which(test$ISBN %in% train.book.avg$ISBN),]
+source("R/ndcg.R")
+sourceCpp("cpp/pred_lpmf.cpp")
+sourceCpp("cpp/pred_pmf.cpp")
+sourceCpp("cpp/pred_ws_lpmf.cpp")
+sourceCpp("cpp/pred_bookavg.cpp")
+```
+
+```{r}
+load("result/lpmf/gd-2.Rda")
+ndcg(test, result, "lpmf", K = 5)
+```
+
+```{r}
+load("result/pmf/gd-2.Rda")
+ndcg(test, result, "pmf", K = 5)
+```
+```{r}
+load("result/ws_lpmf/mm-2.Rda")
+ndcg(test, result, "ws_lpmf", K = 5)
+```
+
+```{r}
+load("bookavg_rslt.Rda")
+ndcg(test, bookavg_rslt, "avg", K = 5)
+```
+
+
+

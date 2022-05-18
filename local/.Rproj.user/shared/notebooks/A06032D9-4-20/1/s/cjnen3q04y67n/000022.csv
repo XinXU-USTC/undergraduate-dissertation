@@ -1,0 +1,6 @@
+"0","cat(paste(""\nLPMF Momentum"", ""\tMAE:"", round(result$mae, 4), ""\tRMSE:"", round(result$rmse, 4)))"
+"1","
+LPMF Momentum 	MAE: 0.1649 	RMSE: 0.2225"
+"0","cat(paste(""\nBook Average"", ""\tMAE:"", round(bookavg_rslt$mae, 4), ""\tRMSE:"", round(bookavg_rslt$rmse, 4)))"
+"1","
+Book Average 	MAE: 0.1762 	RMSE: 0.2252"

@@ -1,0 +1,5 @@
+"0","cat(paste(""There are"", N, ""users and"", M, ""books.\n""))"
+"1","There are 278854 users and 340556 books.
+"
+"0","cat(paste(""There are"", nrow(train), ""examples in the training set and"", nrow(test), ""examples in the test set.""))"
+"1","There are 847349 examples in the training set and 240117 examples in the test set."

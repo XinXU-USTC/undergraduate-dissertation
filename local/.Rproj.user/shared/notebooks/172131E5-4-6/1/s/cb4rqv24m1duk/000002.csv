@@ -1,0 +1,2 @@
+"0","strain$Book.Rating <- strain$Book.Rating/10"
+"0","stest$Book.Rating <- stest$Book.Rating/10"

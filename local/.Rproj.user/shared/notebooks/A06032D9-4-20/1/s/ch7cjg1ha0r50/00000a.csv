@@ -1,0 +1,6 @@
+"0","load(""result/ws_lpmf/mm-2.Rda"")"
+"0","ndcg(test, result, ""ws_lpmf"", K = 5)"
+"1","[1]"
+"1"," 0.8320999"
+"1","
+"

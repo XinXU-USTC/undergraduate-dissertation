@@ -1,0 +1,7 @@
+"0","Books$Year.Of.Publication[which(Books$Year.Of.Publication > 2004)] <- 0"
+"0","Books$Year.Of.Publication[is.na(Books$Year.Of.Publication)] <- 0"
+"0","sum((Books$Year.Of.Publication==0))/length(Books$Year.Of.Publication)"
+"1","[1]"
+"1"," 0.01729437"
+"1","
+"

@@ -1,0 +1,4 @@
+"0","strain <- read.csv(""archive/strain.csv"")"
+"0","stest <- read.csv(""archive/stest.csv"")"
+"0","set.seed(123)"
+"0","rst.sim.pmf <- pmf_mm(strain, stest, 3, c(1e-2, 1, 1), batch = 5e2, M = 1e2, N = 1e4, max_iter = 50, t = 1e-3)"

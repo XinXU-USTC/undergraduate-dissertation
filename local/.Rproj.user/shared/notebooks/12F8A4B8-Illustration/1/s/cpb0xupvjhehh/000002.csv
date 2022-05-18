@@ -1,0 +1,3 @@
+"0","Users[is.na(Users$Age), ""Age""] <- 0"
+"0","Users[which(Users$Age > 100), ""Age""] <- 0"
+"0","Users[which(Users$Age < 7), ""Age""] <- 0"

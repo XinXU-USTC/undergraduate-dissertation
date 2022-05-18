@@ -1,0 +1,6 @@
+"0","load(""result/lpmf/gd-2.Rda"")"
+"0","ndcg(test, result, ""lpmf"", K = 5)"
+"1","[1]"
+"1"," 0.8507869"
+"1","
+"

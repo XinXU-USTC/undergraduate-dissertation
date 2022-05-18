@@ -1,0 +1,621 @@
+---
+title: "Illustration"
+author:
+  - XU, Xin
+documentclass: ctexart
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+---
+
+```{r}
+library(dplyr)
+library(Rcpp)
+library(ggplot2)
+library(showtext)
+library(ggrepel)
+showtext_auto()
+library("ggpubr")
+```
+
+# Data
+```{r}
+Ratings <- read.csv("archive/Ratings.csv")
+```
+
+## Ratings
+```{r}
+summary(Ratings)
+length(unique(Ratings$User.ID))
+length(unique(Ratings$ISBN))
+```
+
+```{r}
+Ratings <- Ratings[Ratings$Book.Rating != 0, ]
+summary(Ratings)
+length(unique(Ratings$User.ID))
+length(unique(Ratings$ISBN))
+```
+
+```{r}
+ggplot(data = Ratings, aes(x=Book.Rating))+geom_bar()
+ggsave("plot/wholedata.pdf")
+```
+
+```{r}
+N <- max(Ratings$User.ID)
+book_idx <- unique(Ratings$ISBN)
+M <- length(book_idx)
+book_idx <- 1:M
+names(book_idx) <- unique(Ratings$ISBN)
+train <- read.csv("archive/train0.csv")
+train$ISBN <- book_idx[train$ISBN]
+test <- read.csv("archive/test0.csv")
+test$ISBN <- book_idx[test$ISBN]
+train.book.avg <- group_by(train, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+test <- test[which(test$ISBN %in% train.book.avg$ISBN),]
+```
+
+```{r}
+ggplot(data = train, aes(x=Book.Rating))+geom_bar()
+ggsave("plot/traindata.pdf")
+ggplot(data = test, aes(x=Book.Rating))+geom_bar()
+ggsave("plot/testdata.pdf")
+```
+
+```{r}
+nrow(train)
+length(unique(train$ISBN))
+nrow(test)
+length(unique(test$ISBN))
+```
+
+## Users
+```{r}
+Users <- read.csv("archive/Users.csv")
+summary(Users)
+sum(is.na(Users$Age))/length(Users$Age)
+length(unique(Users$Location))
+Users <- Users[1:N, ]
+```
+```{r}
+ggplot(data = Users, aes(x=Age)) + geom_bar()
+ggsave("plot/ageraw.pdf")
+```
+
+```{r}
+Users[is.na(Users$Age), "Age"] <- 0
+Users[which(Users$Age > 100), "Age"] <- 0
+Users[which(Users$Age < 7), "Age"] <- 0
+sum(sum(Users$Age==0))/length(Users$Age)
+```
+
+```{r}
+ggplot(data = Users[which(Users$Age!=0),], aes(x=Age)) + geom_bar()
+ggsave("plot/agenew.pdf")
+```
+
+
+## Books
+```{r}
+Books <- read.csv("archive/Books.csv")
+summary(Books)
+Books$Year.Of.Publication <- as.integer(Books$Year.Of.Publication)
+length(unique(Books$Book.Title))
+length(unique(Books$Book.Author))
+length(unique(Books$Publisher))
+length(unique(Books$Year.Of.Publication))
+sum(is.na(Books$Year.Of.Publication))/length(Books$Year.Of.Publication)
+```
+
+```{r}
+ggplot(data = Books[which(Books$Year.Of.Publication>1950),], aes(y=Year.Of.Publication, x="")) + geom_boxplot()
+ggsave("plot/yearraw.pdf")
+```
+
+```{r}
+Books$Year.Of.Publication[which(Books$Year.Of.Publication > 2004)] <- 0
+Books$Year.Of.Publication[is.na(Books$Year.Of.Publication)] <- 0
+sum((Books$Year.Of.Publication==0))/length(Books$Year.Of.Publication)
+```
+
+
+```{r}
+ggplot(data = Books[which(Books$Year.Of.Publication>1950),], aes(x=Year.Of.Publication)) + geom_bar()
+ggsave("plot/yearnew.pdf")
+```
+
+# Model
+```{r}
+x <- c(0.8, 1, -1, -0.1, 1 , -0.8, 0.8)
+y <- c(1, -1, -0.1, 0.8, 0.9, 0, -0.8)
+t <- c(rep("book", 4), rep("person", 3))
+df <- data.frame(x = x, y = y, t = t)
+#colnames(df) <- c("mythical v.s. realistic", "rational v.s. emotional", "type")
+colnames(df) <- c("虚幻-现实", "理性-感性")
+rownames(df) <- c("水浒传", "三国演义", "西游记", "红楼梦", "张三", "李四", "王五")
+```
+
+```{r}
+ggplot(data = NULL, aes(x = x, y = y, shape = t, size = t, color = t ))+xlab("虚幻-现实")+ylab("理性-感性")+geom_point()+geom_abline(slope = 0, intercept = 0, color = "red", size = 2, linetype = "dashed")+geom_vline(xintercept = 0, color = "red", size = 2, linetype = "dashed") + guides(shape = FALSE, color = FALSE, size = FALSE)+geom_label_repel(aes(label = rownames(df),
+                    fill = t), color = 'white',
+                    size = 3.5, show.legend = FALSE)
+ggsave("plot/traitexample.pdf")
+```
+
+# Simulation
+```{r}
+strain <- read.csv("archive/strain0.csv")
+stest <- read.csv("archive/stest0.csv")
+strain$Book.Rating <- (strain$Book.Rating)/9
+stest$Book.Rating <- (stest$Book.Rating)/9
+sourceCpp("cpp/pred_lpmf.cpp")
+aaa <- pred_lpmf(stest, t(matrix(0, nrow = 4, ncol = 1e4)), t(matrix(0, nrow = 4, ncol = 100)))
+```
+```{r}
+strain <- read.csv("archive/strain0.csv")
+stest <- read.csv("archive/stest0.csv")
+strain$Book.Rating <- strain$Book.Rating + 1
+stest$Book.Rating <- stest$Book.Rating + 1
+srating <- rbind(strain, stest)
+ggplot(data = strain, aes(x = Book.Rating))+geom_bar()
+ggsave("plot/simtrain.pdf")
+ggplot(data = stest, aes(x = Book.Rating))+geom_bar()
+ggsave("plot/simtest.pdf")
+ggplot(data = srating, aes(x = Book.Rating))+geom_bar()
+ggsave("plot/simall.pdf")
+```
+
+
+
+```{r}
+load("sbookavg_rslt.Rda")
+load("rst_sim_pmf.Rda")
+mae <- aaa$mae*9
+mae <- c(mae, rst.sim.pmf$tr.mae)
+rmse <- aaa$rmse*9
+rmse <- c(rmse, rst.sim.pmf$tr.rmse)
+dlt <- rst.sim.pmf$tr.delta
+loss <- rst.sim.pmf$tr.loss
+n <- length(mae)
+model <- rep("PMF", n)
+load("rst_sim_lpmf.Rda")
+mae <- c(mae, aaa$mae*9)
+rmse <- c(rmse, aaa$rmse*9)
+mae <- c(mae, rst.sim.lpmf$tr.mae*9)
+rmse <- c(rmse, rst.sim.lpmf$tr.rmse*9)
+dlt <- c(dlt, rst.sim.lpmf$tr.delta)
+loss <- c(loss, rst.sim.lpmf$tr.loss)
+model <- c(model, rep("LPMF", n))
+ggplot(data = NULL, aes(x = rep(0:(n-1), 2), y=mae, color = model))+geom_point()+geom_line()+geom_abline(slope = 0, intercept = 9*sbookavg_rslt$mae, color = "red", size = 0.5, linetype = "dashed")+xlab("Epoch")+ylab("MAE")
+ggsave("plot/simmae.pdf")
+```
+
+```{r}
+ggplot(data = NULL, aes(x = rep(0:(n-1), 2), y=rmse, color = model))+geom_point()+geom_line()+geom_abline(slope = 0, intercept = 9*sbookavg_rslt$rmse, color = "red", size = 0.5, linetype = "dashed")+xlab("Epoch")+ylab("RMSE")
+ggsave("plot/simrmse.pdf")
+```
+
+```{r}
+#n <- n-1
+model <- rep("PMF", n)
+model <- c(model, rep("LPMF", n))
+ggplot(data = NULL, aes(x = rep(1:(n), 2), y=log10(loss), color = model))+geom_point()+geom_line()+xlab("Epoch")+ylab("log of Loss")
+ggsave("plot/simloss.pdf")
+```
+
+
+# Real data
+
+## PMF vs LPMF
+```{r}
+Ratings <- read.csv("archive/Ratings.csv")
+Ratings <- Ratings[Ratings$Book.Rating != 0, ]
+N <- max(Ratings$User.ID)
+book_idx <- unique(Ratings$ISBN)
+M <- length(book_idx)
+book_idx <- 1:M
+names(book_idx) <- unique(Ratings$ISBN)
+train <- read.csv("archive/train0.csv")
+train$ISBN <- book_idx[train$ISBN]
+test <- read.csv("archive/test0.csv")
+test$ISBN <- book_idx[test$ISBN]
+train.book.avg <- group_by(train, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+test <- test[which(test$ISBN %in% train.book.avg$ISBN),]
+train$Book.Rating <- (train$Book.Rating - 1)/9
+test$Book.Rating <- (test$Book.Rating - 1)/9
+sourceCpp("cpp/pred_lpmf.cpp")
+aaa <- pred_lpmf(stest, t(matrix(0, nrow = 4, ncol = 1e4)), t(matrix(0, nrow = 4, ncol = 100)))
+```
+
+```{r}
+load("bookavg_rslt.Rda")
+load("result/pmf/mm-2.Rda")
+mae <- aaa$mae*9
+mae <- c(mae, result$tr.mae)
+rmse <- aaa$rmse*9
+rmse <- c(rmse, result$tr.rmse)
+dlt <- result$tr.delta
+loss <- result$tr.loss
+n <- length(mae)
+model <- rep("PMF", n)
+load("result/lpmf/mm-2.Rda")
+mae <- c(mae, aaa$mae*9)
+rmse <- c(rmse, aaa$rmse*9)
+mae <- c(mae, result$tr.mae*9)
+rmse <- c(rmse, result$tr.rmse*9)
+dlt <- c(dlt, result$tr.delta)
+loss <- c(loss, result$tr.loss)
+model <- c(model, rep("LPMF", n))
+ggplot(data = NULL, aes(x = rep(0:(n-1), 2), y=mae, color = model))+geom_point()+geom_line()+geom_abline(slope = 0, intercept = 9*sbookavg_rslt$mae, color = "red", size = 0.5, linetype = "dashed")+xlab("Epoch")+ylab("MAE")
+ggsave("plot/realmae.pdf")
+```
+
+```{r}
+ggplot(data = NULL, aes(x = rep(0:(n-1), 2), y=rmse, color = model))+geom_point()+geom_line()+geom_abline(slope = 0, intercept = 9*sbookavg_rslt$rmse, color = "red", size = 0.5, linetype = "dashed")+xlab("Epoch")+ylab("RMSE")
+ggsave("plot/realrmse.pdf")
+```
+
+```{r}
+n <- n-2
+model <- rep("PMF", n)
+model <- c(model, rep("LPMF", n))
+ggplot(data = NULL, aes(x = rep(1:(n), 2), y=log10(dlt), color = model))+geom_point()+geom_line()+xlab("Epoch")+ylab("log of Relative Change of Loss")
+ggsave("plot/realloss.pdf")
+```
+```{r}
+load("result/pmf/mm-2.Rda")
+round(result$mae, 4)
+round(result$rmse, 4)
+load("result/lpmf/mm-2.Rda")
+round(result$mae*9, 4)
+round(result$rmse*9, 4)
+load("bookavg_rslt.Rda")
+round(bookavg_rslt$mae*9, 4)
+round(bookavg_rslt$rmse*9, 4)
+```
+```{r}
+load("result/pmf/mm-2.Rda")
+round(abs(result$mae-bookavg_rslt$mae*9)/(bookavg_rslt$mae*9), 6)
+round(abs(result$rmse-bookavg_rslt$rmse*9)/(bookavg_rslt$rmse*9), 6)
+load("result/lpmf/mm-2.Rda")
+round(abs(result$mae*9-bookavg_rslt$mae*9)/(bookavg_rslt$mae*9), 6)
+round(abs(result$rmse*9-bookavg_rslt$rmse*9)/(bookavg_rslt$rmse*9), 6)
+```
+
+```{r}
+load("result/lpmf/gd-2.Rda")
+ggplot(data = NULL, aes(x=1:length(result$tr.mae), y = result$tr.mae))+geom_point()+geom_line()+xlab("Iteration")+ylab("MAE")
+ggsave("plot/lpmfgd2mae.pdf")
+ggplot(data = NULL, aes(x=1:length(result$tr.rmse), y = result$tr.rmse))+geom_point()+geom_line()+xlab("Iteration")+ylab("RMSE")
+ggsave("plot/lpmfgd2rmse.pdf")
+ggplot(data = NULL, aes(x=1:length(result$tr.delta), y = log10(result$tr.delta)))+geom_point()+geom_line()+xlab("Iteration")+ylab("log of Relative Change of Loss")
+ggsave("plot/lpmfgd2loss.pdf")
+```
+
+```{r}
+load("result/lpmf/gd-2.Rda")
+round(abs(result$mae*9-bookavg_rslt$mae*9)/(bookavg_rslt$mae*9), 6)
+round(abs(result$rmse*9-bookavg_rslt$rmse*9)/(bookavg_rslt$rmse*9), 6)
+```
+
+
+## Dimension
+```{r echo=FALSE}
+dir1 <- "result/lpmf/mm-"
+dir2 <- "result/lpmf/gd-"
+dir3 <- ".Rda"
+mm.mae <- NULL
+mm.rmse <- NULL
+gd.mae <- NULL
+gd.rmse <- NULL
+for(i in 1:4){
+  dim <- 2^i
+  load(paste0(dir1, dim, dir3))
+  mm.mae[i] <- result$mae
+  mm.rmse[i] <- result$rmse
+  load(paste0(dir2, dim, dir3))
+  gd.mae[i] <- result$mae
+  gd.rmse[i] <- result$rmse
+}
+```
+
+```{r}
+ggplot(data = NULL, aes(x = 2^(1:4), y=gd.mae))+geom_point()+geom_line()+geom_abline(slope = 0, intercept = 9*bookavg_rslt$mae, color = "red", size = 0.5, linetype = "dashed")+xlab("Dimension")+ylab("MAE")
+ggsave("plot/gdmaedim.pdf")
+ggplot(data = NULL, aes(x = 2^(1:4), y=gd.rmse))+geom_point()+geom_line()+geom_abline(slope = 0, intercept = 9*bookavg_rslt$rmse, color = "red", size = 0.5, linetype = "dashed")+xlab("Dimension")+ylab("RMSE")
+ggsave("plot/gdrmsedim.pdf")
+```
+
+## Explaination
+
+```{r echo=FALSE,eval=FALSE}
+load("result/lpmf/gd-2.Rda")
+idx <- c(4, 7, 8, 9, 24, 25, 118, 146)
+bn <- names(book_idx)[idx]
+aaa <- Books[which(Books$ISBN %in% bn), ]
+idx <- book_idx[aaa$ISBN]
+aaa$ISBN <- idx
+#plot(result$V[1, idx], result$V[2, idx], pch = 20, ylim = c(-1, 1.5), xlim = c(-1.5, 1.5), xlab = "trait1", ylab = "trait2")
+#abline(h=0, lty=2)
+#abline(v=0, lty=2)
+#text(result$V[1, idx]-0.2, result$V[2, idx], labels = aaa$Book.Title, cex = 0.5)
+#ggplot(data = NULL, aes(x = x, y = y, shape = t, size = t, color = t ))+xlab("虚幻-现实")+ylab("理性-感性")+geom_point()+geom_abline(slope = 0, intercept = 0, color = "red", size = 2, linetype = "dashed")+geom_vline(xintercept = 0, color = "red", size = 2, linetype = "dashed") + guides(shape = FALSE, color = FALSE, size = FALSE)+geom_label_repel(aes(label = rownames(df),
+#                    fill = t), color = 'white',
+#                    size = 3.5, show.legend = FALSE)
+
+ggplot(data = NULL, aes(x=result$V[1, idx], y=result$V[2, idx])) + xlab("modern-historical") + ylab("rational-emotional") + geom_point()+geom_abline(slope = 0, intercept = 0, color = "black", size = 2, linetype = "dashed")+geom_vline(xintercept = 0, color = "black", size = 2, linetype = "dashed") + geom_label_repel(aes(label = aaa$Book.Title), size = 3.5)
+ggsave("plot/explain.pdf")
+```
+
+```{r}
+test$pred <- pred_lpmf(test, t(result$U), t(result$V))$prediction
+```
+
+```{r}
+load("result/lpmf/gd-2.Rda")
+dist <- NULL
+for(i in 1:nrow(train)){
+  dist[i] <- sqrt(sum(result$V[, train[i, "ISBN"]]^2))
+}
+train$dist <-dist
+```
+
+```{r}
+train.book.dist <- group_by(train, ISBN) %>% summarise(
+  num = length(User.ID),
+  dist = mean(dist)
+)
+train.book.dist <- group_by(train.book.dist, num) %>% summarise(
+  d = mean(dist)
+)
+```
+
+```{r}
+ggplot(data = train.book.dist, aes(x=num, y=d))+geom_point()+xlab("Number of Ratings")+ylab("Distance")
+ggsave("plot/distnum.pdf")
+```
+
+```{r}
+load("result/lpmf/gd-2.Rda")
+dist <- NULL
+for(i in 1:nrow(train)){
+  dist[i] <- sqrt(sum(result$U[, train[i, "ISBN"]]^2))
+}
+train$dist <-dist
+```
+
+```{r}
+train.book.dist <- group_by(train, ISBN) %>% summarise(
+  num = length(User.ID),
+  dist = mean(dist)
+)
+train.book.dist <- group_by(train.book.dist, num) %>% summarise(
+  d = mean(dist)
+)
+```
+
+```{r}
+ggplot(data = train.book.dist, aes(x=num, y=d))+geom_point()+xlab("Number of Ratings")+ylab("Distance")
+ggsave("plot/distnumuser.pdf")
+```
+
+
+```{r}
+sum(train.book.dist$d < 1)/nrow(train.book.dist)
+ggplot(data = train.book.dist, aes(x="", y=d))+geom_boxplot()
+ggsave("plot/distboxplot.pdf")
+```
+
+```{r}
+x=result$V[1, idx]
+y=result$V[2, idx]
+sqrt(x^2+y^2)
+```
+
+```{r}
+train.book.dist <- group_by(train, ISBN) %>% summarise(
+  num = length(User.ID),
+  dist = mean(dist)
+)
+ggplot(data = train.book.dist[which(train.book.dist$num<30&train.book.dist$num>3), ], aes(x=num)) + geom_bar()+xlab("Number of Ratings")
+ggsave("plot/distnumbar.pdf")
+```
+```{r}
+train.book.dist <- group_by(train, ISBN) %>% summarise(
+  num = length(User.ID),
+  dist = mean(dist)
+)
+ggplot(data = train.book.dist[which(train.book.dist$num<30&train.book.dist$num>3), ], aes(x=num)) + geom_bar()+xlab("Number of Ratings")
+ggsave("plot/distnumbaruser.pdf")
+```
+
+# cold-start
+
+```{r eval=FALSE}
+train <- read.csv("archive/train0.csv")
+train$ISBN <- book_idx[train$ISBN]
+test <- read.csv("archive/test0.csv")
+test$ISBN <- book_idx[test$ISBN]
+train$Book.Rating <- (train$Book.Rating - 1)/9
+test$Book.Rating <- (test$Book.Rating - 1)/9
+train.book.avg <- group_by(train, ISBN) %>% summarise(
+  avg.rating = mean(Book.Rating)
+)
+test <- test[which(test$ISBN %in% train.book.avg$ISBN),]
+book_avg <- train.book.avg$avg.rating
+names(book_avg) <- train.book.avg$ISBN
+book_idx1 <- names(book_avg)
+```
+```{r echo=FALSE}
+load("result/ws_lpmf/mm-2.Rda")
+result.ws <- result
+load("result/lpmf/gd-2.Rda")
+result.lpmf <- result
+sourceCpp("cpp/pred_ws_lpmf.cpp")
+sourceCpp("cpp/pred_lpmf.cpp")
+sourceCpp("cpp/pred_bookavg.cpp")
+load("FU.Rda")
+load("FV.Rda")
+load("grp_df.Rda")
+grp_df[[1]] <- NULL
+grp_df[[1]] <- NULL
+grp_rst <- lapply(grp_df, function(df){
+  df$Book.Rating <- (df$Book.Rating-1)/9
+  lpmf <-  pred_lpmf(df, t(result.lpmf$U), t(result.lpmf$V))
+  ws <- pred_ws_lpmf(df,t(FU), t(FV), t(result.ws$WU), t(result.ws$WV))
+  avg <- pred_bookavg(df, book_avg, book_idx1)
+  return(list(lpmf = lpmf, ws = ws, avg = avg))
+})
+mae.lpmf <- NULL
+mae.ws <- NULL
+mae.avg <- NULL
+rmse.lpmf <- NULL
+rmse.ws <- NULL
+rmse.avg <- NULL
+for(i in 1:9){
+  aaa <- grp_rst[[i]]
+  lpmf.aaa <- aaa$lpmf
+  ws.aaa <- aaa$ws
+  avg.aaa <- aaa$avg
+  mae.lpmf[i] <- lpmf.aaa$mae
+  mae.ws[i] <- ws.aaa$mae
+  mae.avg[i] <- avg.aaa$mae
+  rmse.lpmf[i] <- lpmf.aaa$rmse
+  rmse.ws[i] <- ws.aaa$rmse
+  rmse.avg[i] <- avg.aaa$rmse
+}
+```
+
+```{r echo=FALSE}
+load("grp_df.Rda")
+grp_num <- sapply(grp_df, function(x){
+  nrow(x)
+})
+names(grp_num) <- c("0", "1-3", "4-6", "7-9", "10-13", "14-17", "18-19", "20-23", "24-50", "51-100", ">100")
+```
+
+```{r}
+ggplot(data = data.frame(rmse.lpmf = rmse.lpmf, usergrp = as.factor(1:9)), aes(x=usergrp, y=rmse.lpmf))+geom_point()+geom_line(aes(x=as.numeric(usergrp), y=as.numeric(rmse.lpmf)))+ylab("RMSE")+scale_x_discrete("User Groups", labels = c("1"= names(grp_num)[3], "2"= names(grp_num)[4], "3"= names(grp_num)[5], "4"= names(grp_num)[6], "5"= names(grp_num)[7], "6"= names(grp_num)[8], "7"= names(grp_num)[9], "8"= names(grp_num)[10], "9"= names(grp_num)[11]))
+ggsave("plot/grprmse.pdf")
+```
+
+```{r}
+ggplot(data = data.frame(mae.lpmf = mae.lpmf, usergrp = as.factor(1:9)), aes(x=usergrp, y=mae.lpmf))+geom_point()+geom_line(aes(x=as.numeric(usergrp), y=as.numeric(mae.lpmf)))+ylab("MAE")+scale_x_discrete("User Groups", labels = c("1"= names(grp_num)[3], "2"= names(grp_num)[4], "3"= names(grp_num)[5], "4"= names(grp_num)[6], "5"= names(grp_num)[7], "6"= names(grp_num)[8], "7"= names(grp_num)[9], "8"= names(grp_num)[10], "9"= names(grp_num)[11]))
+ggsave("plot/grpmae.pdf")
+```
+```{r}
+ggplot(data = data.frame(mae.lpmf = mae.lpmf, usergrp = as.factor(1:9)), aes(x=usergrp, y=mae.lpmf))+geom_bar(stat="identity")+ylab("MAE")+scale_x_discrete("User Groups", labels = c("1"= names(grp_num)[3], "2"= names(grp_num)[4], "3"= names(grp_num)[5], "4"= names(grp_num)[6], "5"= names(grp_num)[7], "6"= names(grp_num)[8], "7"= names(grp_num)[9], "8"= names(grp_num)[10], "9"= names(grp_num)[11]))
+ggsave("plot/grpmaebar.pdf")
+```
+```{r}
+ggplot(data = data.frame(rmse.lpmf = rmse.lpmf, usergrp = as.factor(1:9)), aes(x=usergrp, y=rmse.lpmf))+geom_bar(stat="identity")+ylab("RMSE")+scale_x_discrete("User Groups", labels = c("1"= names(grp_num)[3], "2"= names(grp_num)[4], "3"= names(grp_num)[5], "4"= names(grp_num)[6], "5"= names(grp_num)[7], "6"= names(grp_num)[8], "7"= names(grp_num)[9], "8"= names(grp_num)[10], "9"= names(grp_num)[11]))
+ggsave("plot/grprmsebar.pdf")
+```
+
+```{r}
+aux_grp <- NULL
+for(i in 1:9){
+  aux_grp <- c(aux_grp, rep(i, grp_num[i+2]))
+}
+ggplot(data = NULL, aes(x=as.factor(aux_grp)))+geom_bar()+ylab("Number of Users")+scale_x_discrete("User Groups", labels = c("1"= names(grp_num)[3], "2"= names(grp_num)[4], "3"= names(grp_num)[5], "4"= names(grp_num)[6], "5"= names(grp_num)[7], "6"= names(grp_num)[8], "7"= names(grp_num)[9], "8"= names(grp_num)[10], "9"= names(grp_num)[11]))
+ggsave("plot/grpnum.pdf")
+```
+
+```{r}
+ggplot(data = data.frame(mae = c(mae.avg, mae.lpmf, mae.ws), usergrp = as.factor(rep(1:9, 3)), model = rep(c("book-average", "LPMF", "WSLPMF"), each = 9)), aes(x=usergrp, y=mae, color = model, shape = model))+geom_point()+geom_line(aes(x=as.numeric(usergrp), y=mae, color = model, shape = model))+ylab("MAE")+scale_x_discrete("User Groups", labels = c("1"= names(grp_num)[3], "2"= names(grp_num)[4], "3"= names(grp_num)[5], "4"= names(grp_num)[6], "5"= names(grp_num)[7], "6"= names(grp_num)[8], "7"= names(grp_num)[9], "8"= names(grp_num)[10], "9"= names(grp_num)[11]))
+ggsave("plot/finmae.pdf")
+```
+
+```{r}
+ggplot(data = data.frame(rmse = c(rmse.avg, rmse.lpmf, rmse.ws), usergrp = as.factor(rep(1:9, 3)), model = rep(c("book-average", "LPMF", "WSLPMF"), each = 9)), aes(x=usergrp, y=rmse, color = model, shape = model))+geom_point()+geom_line(aes(x=as.numeric(usergrp), y=rmse, color = model, shape = model))+ylab("RMSE")+scale_x_discrete("User Groups", labels = c("1"= names(grp_num)[3], "2"= names(grp_num)[4], "3"= names(grp_num)[5], "4"= names(grp_num)[6], "5"= names(grp_num)[7], "6"= names(grp_num)[8], "7"= names(grp_num)[9], "8"= names(grp_num)[10], "9"= names(grp_num)[11]))
+ggsave("plot/finrmse.pdf")
+```
+
+# Extension
+## Users
+```{r}
+Users <- read.csv("archive/Users.csv")
+Users <- Users[1:N, ]
+```
+
+### pre-processing
+```{r}
+Users[is.na(Users$Age), "Age"] <- 0
+Users[which(Users$Age > 100), "Age"] <- 0
+Users[which(Users$Age < 7), "Age"] <- 0
+```
+
+## Check intuition
+```{r}
+age <- NULL
+for(i in 1:nrow(train)){
+  age[i] <- Users[which(Users$User.ID == train[i, ]$User.ID), "Age"]
+}
+```
+
+```{r}
+train$age <- as.factor(unlist(age))
+```
+```{r}
+Ratings_by_age <- group_by(train, age) %>% summarise(
+  avg = mean(Book.Rating),
+  sd = sd(Book.Rating)
+)
+```
+
+```{r}
+summary(train)
+```
+
+```{r}
+summary(aov(Book.Rating~age, data=train[which(train$age!=0), ]))
+```
+```{r}
+ggline(train[which(train$age %in% seq(10, 50, 10)), ], x = "age", y = "Book.Rating", 
+       add = c("mean_se"),
+       ylab = "Rating", xlab = "Age")+scale_x_discrete("Age", labels = c("10"="10(99)", "20" = "20(2778)", "30"="30(7631)", "40"="40(4767)", "50"="50(2996)"))
+ggsave("plot/age.pdf")
+```
+## Books
+```{r}
+year <- NULL
+for(i in 1:nrow(train)){
+  #if(i %% 1e3 == 0){
+  #  browser()
+  #}
+  if(names(book_idx)[train[i, "ISBN"]] %in% Books$ISBN ){
+    
+    year[i] <- Books[which(Books$ISBN==names(book_idx)[train[i, "ISBN"]]), "Year.Of.Publication"]
+  }else{
+    year[i] <- 0
+  }
+}
+```
+```{r}
+train$year <- as.factor(year)
+```
+
+```{r}
+Ratings_by_year <- group_by(train, year) %>% summarise(
+  avg = mean(Book.Rating)*9,
+  sd = sd(Book.Rating)*9
+)
+```
+
+```{r}
+summary(aov(Book.Rating~year, data=train[which(train$year!=0), ]))
+```
+
+```{r}
+ggline(train[which(train$year %in% seq(2000, 2004, 1)), ], x = "year", y = "Book.Rating", 
+       add = c("mean_se"),
+       ylab = "Rating", xlab = "Year")+scale_x_discrete("Year", labels = c("2000"="2000", "2001" = "2001", "2002"="2002", "2003"="2003", "2004"="2004"))
+ggsave("plot/year.pdf")
+```

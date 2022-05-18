@@ -1,0 +1,6 @@
+"0","load(""bookavg_rslt.Rda"")"
+"0","ndcg(test, bookavg_rslt, ""avg"", K = 5)"
+"1","[1]"
+"1"," 0.8444817"
+"1","
+"
